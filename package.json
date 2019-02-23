@@ -1,0 +1,37 @@
+{
+  "name": "alexbrausen.com",
+  "version": "1.0.0",
+  "description": "Personal website for Alex Brausen",
+  "main": "script.js",
+  "scripts": {
+    "build": "webpack --mode=development",
+    "publish": "webpack --mode=production",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Brausen42/alexbrausen.com.git"
+  },
+  "author": "Alex Brausen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Brausen42/alexbrausen.com/issues"
+  },
+  "homepage": "https://github.com/Brausen42/alexbrausen.com#readme",
+  "devDependencies": {
+    "css-loader": "^2.1.0",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.2",
+    "vue": "^2.5.22",
+    "vue-loader": "^15.5.1",
+    "vue-template-compiler": "^2.5.22",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "ts-promise": "^2.1.0"
+  }
+}

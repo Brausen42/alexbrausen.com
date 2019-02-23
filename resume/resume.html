@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Alex Brausen</title>
+  	<link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet" type="text/css">
+  	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheet.css" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  	<script src="oldscript.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div ng-app="professional" ng-controller="control">
+      <div id="welcome" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1>AlexBrausen.com</h1>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-block" data-dismiss="modal">Continue to site</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="header">
+          <h2>Alex Brausen</h2>
+        </div>
+        <div>
+          <ul class="nav nav-tabs nav-justified">
+            <li class="active"><a data-toggle="tab" href="#education">Education</a></li>
+            <li><a data-toggle="tab" href="#employment">Employment</a></li>
+            <li><a data-toggle="tab" href="#projects">Projects</a></li>
+            <li><a data-toggle="tab" href="#interests">Interests</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="education" class="tab-pane fade in active">
+              <h3>University of Minnesota - Twin Cities</h3>
+              <h5>Bachelor of Science, Computer Science <small>Expected December 2017</small></h5>
+              <h4>Courses Taken</h4>
+              <table class="table table-hover">
+                <tr>
+                  <th ng-click="changeOrder('dept')">Department</th>
+                  <th ng-click="changeOrder('number')">Number</th>
+                  <th ng-click="changeOrder('title')">Title</th>
+                </tr>
+                <tr ng-repeat="course in courses | orderBy : current_order">
+                  <td>{{ course.dept }}</td>
+                  <td>{{ course.number }}</td>
+                  <td>{{ course.title }}</td>
+                </tr>
+              </table>
+            </div>
+            <div id="employment" class="tab-pane fade">
+              <ul class="nav nav-pills nav-justified">
+                <li class="active"><a data-toggle="tab" href="#epic">Epic</a></li>
+                <li><a data-toggle="tab" href="#tr">Thomson Reuters</a></li>
+                <li><a data-toggle="tab" href="#uofm">University of Minnesota</a></li>
+              </ul>
+              <div class="tab-content">
+                <div id="epic" class="tab-pane fade in active">
+                  <h3>Software Developer Intern at Epic Systems <small>Summer of 2017</small></h3>
+                  <p>
+                    At Epic, I worked on the Genomics team. I had a single project for the summer which was to create
+                    web application that genetic specialists (Bioinformaticians, Genetic Analysts, etc.) could use to aid
+                    in the process of interpreting VCF files. In the process, I worked with experienced developers,
+                    quality assurance individuals, and UX designers to create the final web application which was called the
+                    Variant Explorer. The list of features is as follows:
+                    <ul class="list-group">
+                      <li class="list-group-item">Import VCF file and perform checks to ensure proper formatting</li>
+                      <li class="list-group-item">Search and Filter variants based on any associated field</li>
+                      <li class="list-group-item">Dig into any information associated with a variant</li>
+                      <li class="list-group-item">Annotate individaul variants to aid in clinical decisions down the road</li>
+                      <li class="list-group-item">Save out subsets of the file</li>
+                    </ul>
+                    All of which was done so in an intuitive manner.
+                  </p>
+                </div>
+                <div id="tr" class="tab-pane fade">
+                  <h3>Software Developer Intern at Thomson Reuters <small>Summer of 2016</small></h3>
+                  <p>
+                    At Thomson Reuters I worked with a small team of developers to maintain and upgrade an internal web application. The
+                    application was used by an expanding group of Thomson Reuters employees to take a database of internal information and
+                    generate reports in the form of excel documents that represented some useful subset of the data that could be used to
+                    improve their workflows.
+                  </p>
+                  <p>
+                    There were also a few interactive, real-time tools for visualizing the internal information,
+                    one of which I created during the ladder portion of the summer. The tool I made allowed the user to visualize and interact
+                    with data through the use of interactive pie charts. I used the Google Visualization JavaScript API to help create the tool.
+                  </p>
+                  <p>
+                    Other tasks included creating templates for SQL queries that users could change specific parameters to customize and receive
+                    the results in an excel document, and creating Python scripts that helped connect the SQL database with a sharepoint site.
+                  </p>
+                </div>
+                <div id="uofm" class="tab-pane fade">
+                  <h3>Teaching Assistant at University of Minnesota <small>Every semester from Fall 2015 through Spring 2017</small></h3>
+                  <p>
+                    As a TA I was tasked with working with students at labs and office hours to help them learn the concepts presented in class,
+                    assist in the grading process, and help advise the professor in how to help the students the most.
+                  </p>
+                  <p>
+                    For the 2015-2016 school year I was a TA for the CSCI 1113 course titled <em>Intro to C/C++ Programming</em>. This was an
+                    introductory course to computer programming so it covered the basics such as types, control flow, and loops. Slightly more
+                    advanced topics were also looked into such as pointers and OOP basics.
+                  </p>
+                  <p>
+                    For the 2016-2017 school year I was a TA for the CSCI 2041 course titled <em>Advanced Programming Principles</em>. This course
+                    was an intermediate level course taught through the medium of functional programming. One semester used Clojure, and the other
+                    used Ocaml. Topics such as inferred vs. hard typing, higher-order functions, and closures were covered.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div id="projects" class="tab-pane fade">
+              <ul class="nav nav-pills nav-justified">
+                <li class="active"><a data-toggle="tab" href="#snake">Snake</a></li>
+                <li><a data-toggle="tab" href="#gol">Game of Life</a></li>
+                <li><a data-toggle="tab" href="#wonce">Wonce</a></li>
+              </ul>
+              <div class="tab-content">
+                <div id="snake" class="tab-pane fade in active container-fluid">
+                  <h3>Snake</h3>
+                  <div class="row">
+                    <p class="col-lg-4">
+                      This is the first large personal project I ever made and the inspiration for it came from the fact
+                      that I had never been able to program anything that had a visual aspect yet in my courses. <br/><br/>
+                      Snake is a
+                      game based on the well known version where the user is an ever growing 'snake' trying to grow as large
+                      as possible while avoiding obstacles in a confined world. My version has added the ability to play a
+                      local 2 player mode where the goal is to survive longer than the opponent. This adds a more competitive
+                      nature to the originally solo gameplay. In addition, my version allows a slightly more interesting solo
+                      gameplay where, as you grow, mines are placed in the world to add more obstacles.<br/><br/>
+
+                      The source code for this can be found on <a href="https://github.com/Brausen42/Snake">my github</a>
+                    </p>
+                    <img src="snake.gif" alt="Gif of snake game being played with two players" class="col-lg-8">
+                  </div>
+
+                </div>
+                <div id="wonce" class="tab-pane fade">
+                  <h3>Wonce</h3>
+                  <p>
+                    Wonce is a program that was heavily influenced by a project done in one of my courses at the University of
+                    Minnesota. The project was to create a program that would take in examples of what a word is and then be able
+                    to generate its own words that looked similar to the example words. This was done purely through storing the
+                    probabilities of letters coming after other letters. If the program was exposed to many words where 'r's came
+                    after 'e's, then it would generate words where 'r's came after 'e's. My modifications expanded the capabilities
+                    from words to sentences.<br/><br/>
+
+                    The source code for this can be found on <a href="https://github.com/Brausen42/RandomPython">my github</a> under the file Wonce.py
+                  </p>
+                </div>
+                <div id="gol" class="tab-pane fade container-fluid">
+                  <h3>Game of Life</h3>
+                  <div class="row">
+                    <p class="col-lg-8">
+                      My interest in Cellular Automata lead me to recreate the
+                      <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">Game of Life</a> introduced by John Conway in 1970.
+                      The idea is that you can create a simple world that advances from one time step to the next by applying a few
+                      simple rules to the current state of the world, and out of it there precipitates complex interactions.
+                      <br/><br/>
+                      I am currently working on a web-based implementation which can be found <a href="../gol/gol.html" target="_blank">here</a>.
+                      This version is still in very early development so it's possible that there's some bugs.<br/>
+                    </p>
+                    <img class="col-lg-4" src="Gospers_glider_gun.gif" alt="Example of Game of Life"/>
+                  </div>
+                  <div class="col-lg-12">
+                    <p>I plan to add the following features when I get the chance:</p>
+                    <ul class="list-group">
+                      <li class="list-group-item">Toggling specific cells on/off</li>
+                      <li class="list-group-item">Adjusting the speed of progression</li>
+                      <li class="list-group-item">Placing specific groups of cells</li>
+                      <li class="list-group-item">User accounts to save states</li>
+                      <li class="list-group-item">Overall optimization of algorithms</li>
+                      <li class="list-group-item">Fine tuning of controls and interface</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="interests" class="tab-pane fade">
+              <h3>Interests</h3>
+                <div class="panel-group" id="accordion">
+                 <div class="panel panel-default">
+                   <div class="panel-heading">
+                     <h4 class="panel-title">
+                       <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                       Artificial Intelligence/Machine learning</a>
+                     </h4>
+                   </div>
+                   <div id="collapse1" class="panel-collapse collapse in">
+                     <div class="panel-body">Making computers act intelligently has always been an interest of mine.
+                       I find automation to be a very useful tool, and Artificial Intelligence opens the door for
+                       automation of complex tasks. Machine learning is a powerful tool for aiding in the
+                       progression of Artificial Intelligenece as it allows for complex patterns to be found
+                       and leveraged.</div>
+                   </div>
+                 </div>
+                 <div class="panel panel-default">
+                   <div class="panel-heading">
+                     <h4 class="panel-title">
+                       <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                       Data Visualization</a>
+                     </h4>
+                   </div>
+                   <div id="collapse2" class="panel-collapse collapse">
+                     <div class="panel-body">Often times it seems that there's a lot of data that could tell us something
+                       extemely useful, but looking at the raw data isn't useful for grasping these concepts. Data visualization
+                       can tell the story behind data in a fun and intuitive manner and I think this is an area that
+                       will become more and more useful as data gets bigger and bigger.</div>
+                   </div>
+                 </div>
+                 <div class="panel panel-default">
+                   <div class="panel-heading">
+                     <h4 class="panel-title">
+                       <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                       Cellular Automata</a>
+                     </h4>
+                   </div>
+                   <div id="collapse3" class="panel-collapse collapse">
+                     <div class="panel-body">Cellular Automata are extremely interesting for me, and largely so
+                       because we don't seem to know much about them. Hobbyists have played around with them with things such as
+                       Conway's Game of Life (myself included), but there hasn't been much in the terms of practicul use. I
+                       think that Cellular Automata have the potential to open some doors that we can't see yet. Specifically,
+                       file compression could possibly be improved by storing states and then decompressing by running those
+                       states to receive the original data back.</div>
+                   </div>
+                 </div>
+                 <div class="panel panel-default">
+                   <div class="panel-heading">
+                     <h4 class="panel-title">
+                       <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                       Blockchain</a>
+                     </h4>
+                   </div>
+                   <div id="collapse4" class="panel-collapse collapse">
+                     <div class="panel-body">With the rise of Bitcoin and other cryptocurrencies it's hard to ignore the
+                       potential that blockchain technologies have to change the way our technological world works. They
+                       offer decentralized control at a massive scale and possibly many more benefits as we understand
+                       the capabilites of blockchains better.</div>
+                   </div>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="text-center">
+          <a href="https://www.linkedin.com/in/brausen42"><i class="fa fa-linkedin fa-2x"></i></a>
+          <a href="https://www.github.com/Brausen42" ><i class="fa fa-github fa-2x"></i></a>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
