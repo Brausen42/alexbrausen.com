@@ -17,16 +17,29 @@
                     </iframe>
                 </div>
                 <div v-if="isType('Videos')">
-                    <div class="align-text">
+                    <graphic-l-ink
+                        v-for="link in links"
+                        v-bind:key="link.id"
+                        v-bind:content="link"
+                    ></graphic-l-ink>
+                    <!-- <div class="align-text">
+
                         <h3>YouTube</h3>
                         <p>The following are some YouTube channels that produce high quality content</p>
                         
-                        <br/><a href=https://www.youtube.com/user/Kurzgesagt/featured>Kurzgesagt</a>
+                        <div class="half">
+                            <a href="https://www.youtube.com/user/Kurzgesagt/featured">
+                                <div class="graphic">
+                                    <h1>Kurzgesagt</h1>
+                                    <p></p>
+                                </div>
+                            </a>
+                        </div>
                         <br/><a href=https://www.youtube.com/channel/UCqYPhGiB9tkShZorfgcL2lA>What I've Learned</a>
                         <br/><a href=https://www.youtube.com/channel/UC4QZ_LsYcvcq7qOsOhpAX4A>Cold Fusion</a>
                         <br/><a href=https://www.youtube.com/channel/UC2C_jShtL725hvbm1arSV9w>C.G.P. Grey</a>
                         
-                    </div>
+                    </div> -->
                 </div>
                 <div v-if="isType('')">
                     <h1>???</h1>
@@ -40,6 +53,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Snake from "./Snake.vue";
+import GraphicLInk from "./GraphicLInk.vue";
 
 enum Type {
     Games = "Games",
@@ -60,7 +74,33 @@ export default Vue.extend({
         return {
             show: false,
             form: Form.Bubble,
-            type: Type.Undefined
+            type: Type.Undefined,
+            links: [
+                {
+                    id: 0, title:"Kurzgesagt",
+                    description:"Insightful animated teachings about a variety of topics that are always approached from a scientific perspectic",
+                    link:"https://www.youtube.com/user/Kurzgesagt/featured",
+                    background: "https://kurzgesagt.org/wp-content/themes/kurzgesagt/library/images/svg/about-header.svg"
+                },
+                                {
+                    id: 1, title:"What I've Learned",
+                    description:"Well researched deep dives into health related self improvement subjects",
+                    link:"https://www.youtube.com/channel/UCqYPhGiB9tkShZorfgcL2lA",
+                    background:"https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/campaign/493308/059664acb97743c5b96a6eefc87b8be1/1?token-time=2145916800&token-hash=ApQAlXl5QiLZbjbQ-RKZjLXTyfvXQ4vcuBsJ3wkCqhI%3D"
+                },
+                                {
+                    id: 2, title:"Cold Fusion",
+                    description:"Technology focused overviews of cool breakthroughs, and the history of big tech companies",
+                    link:"https://www.youtube.com/channel/UC4QZ_LsYcvcq7qOsOhpAX4A",
+                    background:"https://yt3.ggpht.com/a-/AAuE7mBoaXsxIDEQkaAomqKD5g6C8MbA0fcupdXmKA=s288-mo-c-c0xffffffff-rj-k-no"
+                },
+                                {
+                    id: 3, title:"C.G.P. Grey",
+                    description:"Logical approaches to a mosh-posh of interesting concepts",
+                    link:"https://www.youtube.com/channel/UC2C_jShtL725hvbm1arSV9w",
+                    background:"https://yt3.ggpht.com/a-/AAuE7mCZH_J-Vsd5-_-05hR8Ch4SfbgrbqkbaWvfpQ=s288-mo-c-c0xffffffff-rj-k-no"
+                }
+            ]
         }
     },
     computed:{
@@ -72,7 +112,7 @@ export default Vue.extend({
             transitions:true
         }
         },
-        styleObject() : Object{
+        styleObject(): Object {
             if (this.isActive) {
                 return {
                     top:'10px',
@@ -132,12 +172,17 @@ export default Vue.extend({
         }
     },
     components: {
-        Snake
+        Snake,
+        GraphicLInk
     }
 });
 </script>
 
 <style lang="scss">
+    * {
+        box-sizing: border-box;
+    }
+
     .full {
         width: 100%;
         min-height: 600px;

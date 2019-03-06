@@ -42,13 +42,13 @@ div {
 
 a {
   display: inline-block;
-  transition: font-size 1.0s ease-out;
+  transition: box-shadow 1.0s ease-out;
   text-decoration-line: none;
   min-height: 2em;
 }
 
 a:hover {
-  font-size: 1.2em;
+  @include glow(10px, $accentColor);
 }
 
 #welcome {
