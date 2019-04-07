@@ -1,13 +1,12 @@
 {
   "name": "alexbrausen.com",
-  "version": "1.0.0",
+  "version": "0.1.3",
   "description": "Personal website for Alex Brausen",
   "main": "script.js",
   "scripts": {
     "build": "webpack --mode=development",
     "publish": "webpack --mode=production",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",

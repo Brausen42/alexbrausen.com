@@ -1,8 +1,8 @@
 <template>
     <div class="half">
-        <a :href="content.link" class="fill">
+        <a :href="content.link" class="fill glowHover">
             <div class="graphic" v-bind:style="style">
-                <div class="content">
+                <div class="link-content">
                     <h1>{{content.title}}</h1>
                     <p>{{content.description}}</p>
                 </div>
@@ -39,29 +39,42 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-    * {
-        box-sizing: border-box;
-        padding: 0px;
-        border: 0px;
-    }
+@import '../../style';
 
-    .content {
-        background-color: rgba(255, 255, 255, 0.7);
-    }
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    border: 0px;
+}
 
-    .fill {
-        width: 100%;
-        height: 100%;
-    }
+.link-content {
+    background-color: rgba(255, 255, 255, 0.7);
+}
 
-    .graphic {
-        text-align: center;
-        min-height: 200px;
-    }
+.fill {
+    width: 100%;
+    height: 100%;
+}
 
-    .half {
-        width: 50%;
-        min-height: 200px;
-        float: left;
-    }
+.graphic {
+    text-align: center;
+    min-height: 200px;
+}
+
+.half {
+    width: 50%;
+    min-height: 200px;
+    float: left;
+}
+
+.glowHover {
+  display: inline-block;
+  transition: box-shadow 1.0s ease-out;
+  text-decoration-line: none;
+  min-height: 2em;
+}
+
+.glowHover:hover {
+  @include glow(10px, $accentColor);
+}
 </style>

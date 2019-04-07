@@ -54,7 +54,7 @@ interface Control2D extends Control {
 }
 
 let createControl2D = function(canvas : HTMLCanvasElement, context : CanvasRenderingContext2D) : Control2D {
-    let _unit : number= 20;
+    let _unit : number = 20;
     let _canvas : HTMLCanvasElement = canvas;
     let _context : CanvasRenderingContext2D = context;
     let _bounds : Coordinates|null = null;
@@ -219,7 +219,7 @@ let createSinglePlayerSnake = function() : SinglePlayerSnake {
                     player.changeDirection(DIRECTIONS.Left);
                     break;
                 default:
-                    break;
+                    return;
             }
             event.preventDefault();
         }, true);
@@ -367,8 +367,9 @@ export default Vue.extend({
         text-align: center;
         display: block;
         position: absolute;
-        left: 10%;
-        width: 80%;
+        left: 5%;
+        width: 90%;
+        height: 80%;
     }
 
     #snake {

@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: alexbrausen-ingress
+  annotations:  
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+  - hosts:
+    - alexbrausen.com
+    - www.alexbrausen.com
+    secretName: letsencrypt-prod
+  rules:
+  - host: alexbrausen.com
+    http:
+      paths:
+      - backend:
+          serviceName: alexbrausen
+          servicePort: 80
+  - host: www.alexbrausen.com
+    http:
+      paths:
+      - backend:
+          serviceName: alexbrausen
+          servicePort: 80

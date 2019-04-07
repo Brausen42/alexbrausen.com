@@ -1,20 +1,33 @@
   <template>
     <div>
-        <div class="page" v-bind:class=classObject v-bind:style=styleObject>
+        <div v-bind:id=pageId class="page" v-bind:class=classObject v-bind:style=styleObject>
             <span class="pageTitle">{{ content.title }}</span>
-            <span class="closePage" v-on:click=closePage><span>X</span></span>
-            <div class="content">
+            <span class="closePage pageContent" v-bind:style=pageContentStyle v-on:click=closePage><span>X</span></span>
+            <div class="pageContent transitions" v-bind:style=pageContentStyle>
                 <div v-if="isType('Games')">
                     <snake></snake>
                 </div>
                 <div v-if="isType('Music')">
-                    <p>Original playlist created on Spotify</p>
-                    <iframe src="https://open.spotify.com/embed/user/idominatetm/playlist/74M6nIBY2Vd7sViFY17loQ" class="spotifyPlayer" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                    <a href="https://open.spotify.com/embed/user/idominatetm/playlist/74M6nIBY2Vd7sViFY17loQ">Upcoming: Original playlist created on Spotify</a>
                 </div>
                 <div v-if="isType('Professional')">
-                    <iframe class="full" src="resume/resume.html">
-                        <p>Your browser does not support iframes.</p>
-                    </iframe>
+                    <p>This is a personal website, mainly used as a way to experiment with different technologies and make something hopefully interesting.</p>
+
+                    <h2>Stack</h2>
+
+                    <p>The current stack consists of a Vue.js frontend built using Typescript and SCSS, which is then webpacked and put alongside the HTML. This has some links out to other websites I've made in the past using simple HTML, CSS, and pureJS. All these files are layered on an alpine NGINX Docker image so they can be served to requesters.</p>
+
+                    <h2>Depoloyment</h2>
+                    <p>I'm currently deploying this site through Digital Ocean and it's Kubernetes support. The Kubernetes cluster deploys the Stack above into pods and uses a LoadBalancer, Ingress control and the cert-manager project to securely run the site in a way that is easy to do continuous integration and deployment (CI/CD) by updating the docker image and deployment spec.</p>
+
+                    <h2>Future</h2>
+                    <p>There's a lot that I would hope to do with this site. Here's a list of potential improvements in a roughly priority-based order:</p>
+                    <ul>
+                        <li>Transition the linked sites to be natively in the site</li>
+                        <li>Use the Spotify REST api to display the Spotify playlist in a more elegant fashion than an iframe. This would be done in such a way that could be extended to interact with the playlist in an interesting way (like specific songs, suggest songs, strip out songs by genre, etc.)</li>
+                        <li>Overall, include more content on the site so it's less of a tech demo</li>
+                    </ul>
+                    <a href="resume/resume.html">Here's a site that contains a slightly outdated resume</a>
                 </div>
                 <div v-if="isType('Videos')">
                     <graphic-l-ink
@@ -22,31 +35,13 @@
                         v-bind:key="link.id"
                         v-bind:content="link"
                     ></graphic-l-ink>
-                    <!-- <div class="align-text">
-
-                        <h3>YouTube</h3>
-                        <p>The following are some YouTube channels that produce high quality content</p>
-                        
-                        <div class="half">
-                            <a href="https://www.youtube.com/user/Kurzgesagt/featured">
-                                <div class="graphic">
-                                    <h1>Kurzgesagt</h1>
-                                    <p></p>
-                                </div>
-                            </a>
-                        </div>
-                        <br/><a href=https://www.youtube.com/channel/UCqYPhGiB9tkShZorfgcL2lA>What I've Learned</a>
-                        <br/><a href=https://www.youtube.com/channel/UC4QZ_LsYcvcq7qOsOhpAX4A>Cold Fusion</a>
-                        <br/><a href=https://www.youtube.com/channel/UC2C_jShtL725hvbm1arSV9w>C.G.P. Grey</a>
-                        
-                    </div> -->
                 </div>
                 <div v-if="isType('')">
                     <h1>???</h1>
                 </div>
             </div>
         </div>
-        <div class="pageShadow" v-if="!isActive" v-bind:class=classObject v-bind:style=styleObject v-on:click=openPage></div>
+        <div class="pageShadow transitions" v-if="!isActive" v-bind:class=classObject v-bind:style=styleObject v-on:click=openPage></div>
     </div>
 </template>
 
@@ -72,6 +67,7 @@ export default Vue.extend({
     props: ['content','isWelcomed','activeID'],
     data(){
         return {
+            pageContentOpacity: 0.0,
             show: false,
             form: Form.Bubble,
             type: Type.Undefined,
@@ -105,12 +101,12 @@ export default Vue.extend({
     },
     computed:{
         classObject:function(){
-        return {
-            hidden:this.hidden,
-            open:this.form == Form.Open,
-            bubble:this.form == Form.Bubble,
-            transitions:true
-        }
+            return {
+                hidden:this.hidden,
+                open:this.form == Form.Open,
+                bubble:this.form == Form.Bubble,
+                transitions:true
+            }
         },
         styleObject(): Object {
             if (this.isActive) {
@@ -126,6 +122,11 @@ export default Vue.extend({
                 }
             }
         },
+        pageContentStyle(): Object {
+            return {
+                opacity: this.pageContentOpacity
+            }
+        },
         isActive() : boolean {
             return this.form == Form.Open;
         },
@@ -137,6 +138,23 @@ export default Vue.extend({
                 return this.content.id != this.activeID;
             }
             return true;
+        },
+        pageId(): string {
+            let self = this;
+            setTimeout(function() { // pageId needs to propogate before this can be added
+                let pageEl = document.getElementById(self.pageId);
+                if (pageEl != null) {
+                    pageEl.addEventListener("transitionend", function() {
+                        if (self.isActive) {
+                            self.pageContentOpacity = 1.0;
+                        } else {
+                            self.pageContentOpacity = 0.0;
+                        }
+                    });
+                }
+            }, 100);
+                
+            return this.content.title + "Page"
         }
     },
     methods:{
@@ -153,6 +171,7 @@ export default Vue.extend({
         }
     },
     created(){
+        // set Type
         switch (this.content.title) {
             case "Games":
                 this.type = Type.Games;
@@ -179,13 +198,77 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-    * {
-        box-sizing: border-box;
-    }
+@import '../../style';
 
-    .full {
-        width: 100%;
-        min-height: 600px;
-        height: 90%;
+* {
+    box-sizing: border-box;
+}
+
+
+.pageShadow {
+  position: absolute;
+  &:hover {
+    cursor: pointer;
+    @include glow(30px,white);
+  }
+}
+
+.page {
+  * {
+    color:$backColor;
+  }
+  > div {
+    background-color: $foreColor;
+  }
+  position: absolute;
+  background-color: $foreColor;
+  color:$backColor;
+}
+
+.open {
+  width:calc(100% - 20px);
+  min-height: 95%;
+  height:auto;
+  border-radius:10px;
+  .pageTitle {
+    font-size: 30px;
+  }
+}
+
+.bubble {
+  height:$bubbleSize;
+  width:$bubbleSize;
+  border-radius: 50%;
+  .pageTitle {
+    font-size: 40px;
+    @include center();
+  }
+  .pageContent {
+    display: none;
+  }
+}
+
+.closePage {
+  transition: all 1s;
+  height:$closeSize;
+  width:$closeSize;
+  position: absolute;
+  background-color: lightgray;
+  border-radius: 50%;
+  top: 10px;
+  right: 10px;
+  > span {
+    color: red;
+    font-size: 20px;
+    font-weight: 100;
+    @include center();
+  }
+  &:hover {
+    @include glow(25px,$accentColor);
+    cursor: pointer;
+    span {
+      font-weight: 1000;
     }
+  }
+}
 </style>
