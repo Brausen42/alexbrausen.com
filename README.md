@@ -16,6 +16,6 @@ I'm currently deploying this site through Digital Ocean and it's Kubernetes supp
 ## Future
 There's a lot that I would hope to do with this site. Here's a list of potential improvements in a roughly priority-based order:
 * Transition the linked sites to be natively in the site
-* Add the ability to interact with the playlist in intuitive or meaningful ways (sorting, voting on the songs that are in the playlist, etc.)
 * Improve the Snake game
+* Add the ability to interact with the playlist in intuitive or meaningful ways (sorting, voting on the songs that are in the playlist, etc.)
 * Overall, include more content on the site so it's less of a tech demo
