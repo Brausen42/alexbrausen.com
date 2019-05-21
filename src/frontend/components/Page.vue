@@ -8,7 +8,33 @@
                     <snake></snake>
                 </div>
                 <div v-if="isType('Music')">
-                    <a href="https://open.spotify.com/embed/user/idominatetm/playlist/74M6nIBY2Vd7sViFY17loQ">Upcoming: Original playlist created on Spotify</a>
+                    <div v-if="!playlist.error">
+                        <div class="centered" id="upcomingHeader">
+                            <img id="headerImage" v-bind:style=headerStyleObject v-bind:src=playlist.imageUrl alt="Playlist image"/>
+                            <div id="headerDiv">
+                                <h2>{{ playlist.name }}</h2>
+                                <p>{{ playlist.description }}</p>
+                            </div>
+                        </div>
+                        <table class="centered">
+                            <tr>
+                                <th>Title</th>
+                                <th>Artists</th>
+                                <th>Popularity</th>
+                            </tr>
+                            <tr v-for="track in playlist.tracks">
+                                <td> {{ track.name }} </td>
+                                <td> {{ track.artists.join(", ") }} </td>
+                                <td> {{ track.popularity}} </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div v-if="playlist.error">
+                        <div class="centered">
+                            <h2>There was an error retrieving the playlist data :(</h2>
+                        </div>
+                    </div>
+                    
                 </div>
                 <div v-if="isType('Professional')">
                     <p>This is a personal website, mainly used as a way to experiment with different technologies and make something hopefully interesting.</p>
@@ -48,7 +74,8 @@
 <script lang="ts">
 import Vue from "vue";
 import Snake from "./Snake.vue";
-import GraphicLInk from "./GraphicLInk.vue";
+import GraphicLInk from "./GraphicLink.vue";
+import { get, OptionsWithUrl } from "request-promise-native";
 
 enum Type {
     Games = "Games",
@@ -68,6 +95,8 @@ export default Vue.extend({
     data(){
         return {
             pageContentOpacity: 0.0,
+            playlist: {} as any,
+            headerHeight: "100px",
             show: false,
             form: Form.Bubble,
             type: Type.Undefined,
@@ -122,6 +151,11 @@ export default Vue.extend({
                 }
             }
         },
+        headerStyleObject(): Object {
+            return {
+                height: this.headerHeight
+            }
+        },
         pageContentStyle(): Object {
             return {
                 opacity: this.pageContentOpacity
@@ -145,6 +179,7 @@ export default Vue.extend({
                 let pageEl = document.getElementById(self.pageId);
                 if (pageEl != null) {
                     pageEl.addEventListener("transitionend", function() {
+                        self.updateHeaderHeight();
                         if (self.isActive) {
                             self.pageContentOpacity = 1.0;
                         } else {
@@ -168,6 +203,10 @@ export default Vue.extend({
         },
         isType(type : string) : boolean {
             return type == this.type;
+        },
+        updateHeaderHeight: function() {
+            let headerDiv = document.getElementById("headerDiv") as HTMLDivElement;
+            this.headerHeight = headerDiv ? `${headerDiv.offsetHeight}px` || "100px" : "100px";
         }
     },
     created(){
@@ -178,6 +217,23 @@ export default Vue.extend({
                 break;
             case "Music":
                 this.type = Type.Music;
+                let self = this;
+                (async ()=> {
+                    let protocol = location.protocol;
+                    let slashes = protocol.concat("//");
+                    let host = slashes.concat(window.location.host);
+                    let playlistTrackOptions: OptionsWithUrl = {
+                        url: `${host}/api/spotify/upcoming`,
+                        json: true
+                    }
+                    await get(playlistTrackOptions).then((res: any) => {
+                        self.playlist = res;
+                        self.updateHeaderHeight();
+                    }).catch((err) => {
+                        console.log(err);
+                        self.playlist.error = err;
+                    });
+                })();
                 break;
             case "Professional":
                 this.type = Type.Professional;
@@ -198,12 +254,28 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-@import '../../style';
+@import '../style';
 
 * {
     box-sizing: border-box;
 }
 
+tr {
+    @include glow(5px, $accentColor)
+}
+
+th {
+    text-align: left;
+    padding: 10px;
+}
+
+td {
+    padding: 5px;
+}
+
+.centered {
+    margin: auto;
+}
 
 .pageShadow {
   position: absolute;
@@ -270,5 +342,17 @@ export default Vue.extend({
       font-weight: 1000;
     }
   }
+}
+
+#upcomingHeader {
+    display: table;
+    > * {
+        display: inline-block;
+    }
+}
+
+#headerImage {
+    float: left;
+    border-radius: 10px;
 }
 </style>

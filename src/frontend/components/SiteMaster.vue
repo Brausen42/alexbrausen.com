@@ -74,7 +74,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-@import '../../style';
+@import '../style';
 
 * {
   font-family: 'Poiret One', cursive;

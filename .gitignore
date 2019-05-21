@@ -1,4 +1,8 @@
+#build
 node_modules
 dist
 *.css*
-k8s/digital-ocean*
+
+#secret
+k8s/secrets
+.env

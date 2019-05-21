@@ -3,7 +3,7 @@ var webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './index.ts',
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
@@ -62,7 +62,12 @@ module.exports = {
   devtool: '#eval-source-map',
   plugins: [
     new VueLoaderPlugin()
-  ]
+  ],
+  node: {
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty'
+  }
 }
 
 if (process.env.NODE_ENV === 'production') {
