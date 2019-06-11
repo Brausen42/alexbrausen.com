@@ -1,72 +1,12 @@
   <template>
     <div>
-        <div v-bind:id=pageId class="page" v-bind:class=classObject v-bind:style=styleObject>
-            <span class="pageTitle">{{ content.title }}</span>
-            <span class="closePage pageContent" v-bind:style=pageContentStyle v-on:click=closePage><span>X</span></span>
-            <div class="pageContent transitions" v-bind:style=pageContentStyle>
-                <div v-if="isType('Games')">
-                    <snake></snake>
-                </div>
-                <div v-if="isType('Music')">
-                    <div v-if="!playlist.error">
-                        <div class="centered" id="upcomingHeader">
-                            <img id="headerImage" v-bind:style=headerStyleObject v-bind:src=playlist.imageUrl alt="Playlist image"/>
-                            <div id="headerDiv">
-                                <h2>{{ playlist.name }}</h2>
-                                <p>{{ playlist.description }}</p>
-                            </div>
-                        </div>
-                        <table class="centered">
-                            <tr>
-                                <th>Title</th>
-                                <th>Artists</th>
-                                <th>Popularity</th>
-                            </tr>
-                            <tr v-for="track in playlist.tracks">
-                                <td> {{ track.name }} </td>
-                                <td> {{ track.artists.join(", ") }} </td>
-                                <td> {{ track.popularity}} </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div v-if="playlist.error">
-                        <div class="centered">
-                            <h2>There was an error retrieving the playlist data :(</h2>
-                        </div>
-                    </div>
-                    
-                </div>
-                <div v-if="isType('Professional')">
-                    <p>This is a personal website, mainly used as a way to experiment with different technologies and make something hopefully interesting.</p>
-
-                    <h2>Stack</h2>
-                    <h3>Frontend</h3>
-                    <p>A Vue.js client is built using Node.js, Typescript and SCSS which is then webpacked into a single .js file to be put alongside the HTML. This has some links out to other websites I've made in the past using simple HTML, CSS, and pureJS.</p>
-                    <p>A Node.js server is used to serve these static files, and also allows a path for the client to gain dynamic data through REST calls.</p>
-                    
-                    <h2>Depoloyment</h2>
-                    <p>I'm currently deploying this site through Digital Ocean and it's Kubernetes support. The Kubernetes cluster deploys the Stack above into pods and uses a LoadBalancer, Ingress control and the cert-manager project to securely run the site in a way that is easy to do continuous integration and deployment (CI/CD) by updating the docker image and deployment spec.</p>
-
-                    <h2>Future</h2>
-                    <p>There's a lot that I would hope to do with this site. Here's a list of potential improvements in a roughly priority-based order:</p>
-                    <ul>
-                        <li>Transition the linked sites to be natively in the site</li>
-                        <li>Improve the Snake game</li>
-                        <li>Add the ability to interact with the playlist in intuitive or meaningful ways (sorting, voting on the songs that are in the playlist, etc.)</li>
-                        <li>Overall, include more content on the site so it's less of a tech demo</li>
-                    </ul>
-                    <a href="resume/resume.html">Here's a site that contains a slightly outdated resume</a>
-                </div>
-                <div v-if="isType('Videos')">
-                    <graphic-l-ink
-                        v-for="link in links"
-                        v-bind:key="link.id"
-                        v-bind:content="link"
-                    ></graphic-l-ink>
-                </div>
-                <div v-if="isType('')">
-                    <h1>???</h1>
-                </div>
+        <div class="page" v-bind:class=classObject v-bind:style=styleObject>
+            <span class="pageTitle">{{ title }}</span>
+            <span class="closePage pageContent" v-bind:style="pageContentStyle" v-on:click=closePage><span>&times;</span></span>
+            <div class="pageContent transitions" v-bind:style="pageContentStyle">
+                <slot>
+                    <p>Empty page</p>
+                </slot>
             </div>
         </div>
         <div class="pageShadow transitions" v-if="!isActive" v-bind:class=classObject v-bind:style=styleObject v-on:click=openPage></div>
@@ -75,17 +15,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Snake from "./Snake.vue";
-import GraphicLInk from "./GraphicLink.vue";
-import { get, OptionsWithUrl } from "request-promise-native";
-
-enum Type {
-    Games = "Games",
-    Music = "Music",
-    Professional = "Professional",
-    Videos = "Videos",
-    Undefined = ""
-}
 
 enum Form {
     Bubble,
@@ -93,54 +22,25 @@ enum Form {
 }
 
 export default Vue.extend({
-    props: ['content','isWelcomed','activeID'],
+    props: ['data', 'title', 'activeID', 'id'],
     data(){
         return {
+            isActive: false,
             pageContentOpacity: 0.0,
-            playlist: {} as any,
-            headerHeight: "100px",
             show: false,
-            form: Form.Bubble,
-            type: Type.Undefined,
-            links: [
-                {
-                    id: 0, title:"Kurzgesagt",
-                    description:"Insightful animated teachings about a variety of topics that are always approached from a scientific perspectic",
-                    link:"https://www.youtube.com/user/Kurzgesagt/featured",
-                    background: "https://kurzgesagt.org/wp-content/themes/kurzgesagt/library/images/svg/about-header.svg"
-                },
-                                {
-                    id: 1, title:"What I've Learned",
-                    description:"Well researched deep dives into health related self improvement subjects",
-                    link:"https://www.youtube.com/channel/UCqYPhGiB9tkShZorfgcL2lA",
-                    background:"https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/campaign/493308/059664acb97743c5b96a6eefc87b8be1/1?token-time=2145916800&token-hash=ApQAlXl5QiLZbjbQ-RKZjLXTyfvXQ4vcuBsJ3wkCqhI%3D"
-                },
-                                {
-                    id: 2, title:"Cold Fusion",
-                    description:"Technology focused overviews of cool breakthroughs, and the history of big tech companies",
-                    link:"https://www.youtube.com/channel/UC4QZ_LsYcvcq7qOsOhpAX4A",
-                    background:"https://yt3.ggpht.com/a-/AAuE7mBoaXsxIDEQkaAomqKD5g6C8MbA0fcupdXmKA=s288-mo-c-c0xffffffff-rj-k-no"
-                },
-                                {
-                    id: 3, title:"C.G.P. Grey",
-                    description:"Logical approaches to a mosh-posh of interesting concepts",
-                    link:"https://www.youtube.com/channel/UC2C_jShtL725hvbm1arSV9w",
-                    background:"https://yt3.ggpht.com/a-/AAuE7mCZH_J-Vsd5-_-05hR8Ch4SfbgrbqkbaWvfpQ=s288-mo-c-c0xffffffff-rj-k-no"
-                }
-            ]
         }
     },
     computed:{
         classObject:function(){
             return {
-                hidden:this.hidden,
+                hidden:this.activeID !== null && !this.isActive,
                 open:this.form == Form.Open,
                 bubble:this.form == Form.Bubble,
                 transitions:true
             }
         },
         styleObject(): Object {
-            if (this.isActive) {
+            if (this.form === Form.Open) {
                 return {
                     top:'10px',
                     left:'10px'
@@ -148,14 +48,9 @@ export default Vue.extend({
             }
             else {
                 return {
-                    top:'calc(50% + ' + ((175 * Math.sin(this.content.id*(Math.PI/2))) - 100).toFixed(2) + 'px)',
-                    left:'calc(50% + ' + ((175 * Math.cos(this.content.id*(Math.PI/2))) - 100).toFixed(2) + 'px)'
+                    top:'calc(50% + ' + ((200 * Math.sin(this.id*(Math.PI/2))) - 125).toFixed(2) + 'px)',
+                    left:'calc(50% + ' + ((200 * Math.cos(this.id*(Math.PI/2))) - 125).toFixed(2) + 'px)'
                 }
-            }
-        },
-        headerStyleObject(): Object {
-            return {
-                height: this.headerHeight
             }
         },
         pageContentStyle(): Object {
@@ -163,94 +58,24 @@ export default Vue.extend({
                 opacity: this.pageContentOpacity
             }
         },
-        isActive() : boolean {
-            return this.form == Form.Open;
-        },
-        hidden() : boolean {
-            if (this.isWelcomed){
-                if(this.activeID == null){
-                    return false;
-                }
-                return this.content.id != this.activeID;
-            }
-            return true;
-        },
-        pageId(): string {
-            let self = this;
-            setTimeout(function() { // pageId needs to propogate before this can be added
-                let pageEl = document.getElementById(self.pageId);
-                if (pageEl != null) {
-                    pageEl.addEventListener("transitionend", function() {
-                        self.updateHeaderHeight();
-                        if (self.isActive) {
-                            self.pageContentOpacity = 1.0;
-                        } else {
-                            self.pageContentOpacity = 0.0;
-                        }
-                    });
-                }
-            }, 100);
-                
-            return this.content.title + "Page"
+        form(): Form {
+            return this.isActive ? Form.Open : Form.Bubble;
         }
     },
     methods:{
         openPage:function(){
-            this.form = Form.Open;
-            this.$emit('set-active', this.content.id);
+            this.$emit('set-active', this.id);
+            this.pageContentOpacity = 1.0;
         },
         closePage:function(){
-            this.form = Form.Bubble;
             this.$emit('set-active', null);
-        },
-        isType(type : string) : boolean {
-            return type == this.type;
-        },
-        updateHeaderHeight: function() {
-            let headerDiv = document.getElementById("headerDiv") as HTMLDivElement;
-            this.headerHeight = headerDiv ? `${headerDiv.offsetHeight}px` || "100px" : "100px";
+            this.pageContentOpacity = 0.0;
         }
     },
-    created(){
-        // set Type
-        switch (this.content.title) {
-            case "Games":
-                this.type = Type.Games;
-                break;
-            case "Music":
-                this.type = Type.Music;
-                let self = this;
-                (async ()=> {
-                    let protocol = location.protocol;
-                    let slashes = protocol.concat("//");
-                    let host = slashes.concat(window.location.host);
-                    let playlistTrackOptions: OptionsWithUrl = {
-                        url: `${host}/api/spotify/upcoming`,
-                        json: true
-                    }
-                    await get(playlistTrackOptions).then((res: any) => {
-                        self.playlist = res;
-                        self.updateHeaderHeight();
-                    }).catch((err) => {
-                        console.log(err);
-                        self.playlist.error = err;
-                    });
-                })();
-                break;
-            case "Professional":
-                this.type = Type.Professional;
-                break;
-            case "Videos":
-                this.type = Type.Videos;
-                break;
-            default:
-                this.type = Type.Undefined;
-                break;
+    watch: {
+        activeID: function(newVal, oldVal) {
+            this.isActive = this.id === this.activeID;
         }
-    },
-    components: {
-        Snake,
-        GraphicLInk
     }
 });
 </script>
@@ -333,16 +158,13 @@ td {
   right: 10px;
   > span {
     color: red;
-    font-size: 20px;
+    font-size: 3rem;
     font-weight: 100;
     @include center();
   }
   &:hover {
     @include glow(25px,$accentColor);
     cursor: pointer;
-    span {
-      font-weight: 1000;
-    }
   }
 }
 

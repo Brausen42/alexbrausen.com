@@ -1,6 +1,6 @@
 {
   "name": "alexbrausen.com",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Personal website for Alex Brausen",
   "main": "script.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "install": "npm run install-frontend && npm run install-backend",
     "publish-backend": "cd src/backend && npm run publish && cd ../../ && mkdir dist -p && cp -r ./src/backend/dist/* ./dist",
     "publish-frontend": "cd src/frontend && npm run publish && cd ../../ && mkdir dist -p && cp -r ./src/frontend/dist/* ./dist",
-    "debug": "sudo node -r dotenv/config ./dist/server.js",
+    "debug": "node -r dotenv/config ./dist/server.js",
     "start": "node ./dist/server.js",
     "publish": "npm run publish-backend && npm run publish-frontend",
     "test": "echo \"Error: no test specified\" && exit 1"

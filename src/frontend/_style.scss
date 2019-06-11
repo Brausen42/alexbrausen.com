@@ -20,9 +20,15 @@
   box-shadow: 0px 0px $glowSize $glowColor;
 }
 
+@mixin insetGlow($glowSize: 5px, $glowColor: #fff){
+  -moz-box-shadow: 0 0 $glowSize $glowColor inset;
+  -webkit-box-shadow: 0 0 $glowSize $glowColor inset;
+  box-shadow: 0px 0px $glowSize $glowColor inset;
+}
+
 $backColor : #1b2631;
 $foreColor: #f7f9f9;
 $accentColor: #d2b4de;
 $circleSize : 400px;
-$bubbleSize : 200px;
-$closeSize : 30px;
+$bubbleSize : 250px;
+$closeSize : 35px;

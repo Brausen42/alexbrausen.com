@@ -1,6 +1,6 @@
 {
   "name": "alexbrausen.com",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Personal website for Alex Brausen",
   "scripts": {
     "build": "webpack --mode=development && npm run copy-static-files",

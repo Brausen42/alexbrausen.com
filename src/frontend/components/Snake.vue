@@ -357,10 +357,21 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+    @import '../style';
+
     button {
         display: block;
         margin: 0 auto;
         font-size: 2em;
+        padding: 10px;
+        &:hover {
+            @include glow(1px, $accentColor);
+        }
+    }
+
+    button:hover {
+        cursor: pointer;
+        
     }
 
     .gameDisplay {
@@ -374,5 +385,6 @@ export default Vue.extend({
 
     #snake {
         background-color: lightgrey;
+        @include insetGlow(50px, gray);
     }
 </style>
