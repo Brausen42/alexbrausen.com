@@ -14,8 +14,8 @@ A Node.js server is used to serve these static files, and also allows a path for
 I'm currently deploying this site through Digital Ocean and it's Kubernetes support. The Kubernetes cluster deploys the Stack above into pods and uses a LoadBalancer, Ingress control and the cert-manager project to securely run the site in a way that is easy to do continuous integration and deployment (CI/CD) by updating the docker image and deployment spec.
 
 ## Future
-There's a lot that I would hope to do with this site. Here's a list of potential improvements in a roughly priority-based order:
+There's a lot that I would hope to do with this site. Here's a list of potential improvements:
 * Transition the linked sites to be natively in the site
-* Improve the Snake game
-* Add the ability to interact with the playlist in intuitive or meaningful ways (sorting, voting on the songs that are in the playlist, etc.)
+* Improve the Snake game by using a JS graphics library
+* Add the ability to interact with the Spotify playlist in intuitive or meaningful ways (sorting, voting on the songs that are in the playlist, etc.)
 * Overall, include more content on the site so it's less of a tech demo

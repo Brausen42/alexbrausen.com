@@ -2,12 +2,16 @@ import * as express from "express";
 import { resolve } from "path";
 import * as request from "request-promise-native";
 import { Options } from "request";
+import * as crypto from "crypto";
 
 const base64Client = process.env['SPOTIFY_CLIENT'] ? Buffer.from(process.env['SPOTIFY_CLIENT'] as string).toString("base64") : "";
 const port = process.env['LISTEN_PORT'] || 8080;
 let apiToken: string;
-let playlist: { [key: string]: any } = {};
-const playlistId = "74M6nIBY2Vd7sViFY17loQ";
+let upcoming = {
+    id: "74M6nIBY2Vd7sViFY17loQ",
+    data: {},
+    digest: ""
+}
 const playlistApiBaseUrl = "https://api.spotify.com/v1/playlists/";
 
 const default_pages = ["Games", "Music", "Professional", "Videos"];
@@ -39,7 +43,7 @@ const links = [
     }
 ]
 
-let getSpotifyAccessToken = async (override?: boolean) : Promise<string> => {
+async function getSpotifyAccessToken(override?: boolean) : Promise<string> {
     if (apiToken && !override) {
         return apiToken;
     }
@@ -62,23 +66,11 @@ let getSpotifyAccessToken = async (override?: boolean) : Promise<string> => {
     return apiToken || "";
 }
 
-let app = express();
-app.get('/', function (req, res) {
-  res.sendFile('index.html', { root: resolve('./dist/')});
-});
-
-app.get("/api/pages/default", function(_request, response) {
-    response.json(default_pages);
-});
-
-app.get("/api/youtube", function(_request, response) {
-    response.json(links);
-});
-
-app.get('/api/spotify/upcoming', async function (_request, response) {
+async function getSpotifyPlaylist(id: string) {
+    let playlist: { [key: string]: any } = {};
     let tracks: any[] = [];
     let playlistTrackOptions: request.OptionsWithUrl = {
-        url: `${playlistApiBaseUrl}${playlistId}`,
+        url: `${playlistApiBaseUrl}${id}`,
         auth: {
             bearer: await getSpotifyAccessToken()
         },
@@ -98,39 +90,79 @@ app.get('/api/spotify/upcoming', async function (_request, response) {
         }
     }
 
-    async function requestPlaylist(url?: string): Promise<any> {
+    async function requestPlaylist(url?: string): Promise<void> {
         if (url){
             playlistTrackOptions.url = url;
         }
 
-        await request.get(playlistTrackOptions).then(async (res: any) => {
+        try {
+            const res = await request.get(playlistTrackOptions);
             playlist.name = res.name || playlist.name;
             playlist.description = res.description || playlist.description;
             playlist.imageUrl = res.images ? res.images[0].url || playlist.imageUrl : playlist.imageUrl || "";
     
             await parseTracks(res.tracks || res);
             playlist.tracks = tracks;
-        }).catch(async (err) => {
+        } catch (err) {
             if (err.statusCode === 401) {
                 if (await getSpotifyAccessToken(true)){
-                    return await requestPlaylist(playlistTrackOptions.url as string);
+                    await requestPlaylist(playlistTrackOptions.url as string);
+                    return;
                 }
             }
             console.log(err);
             playlist.error = err.message;
-        });
+        }
     }
 
     await requestPlaylist();
-    response.json(playlist);
-  });
+    return playlist;
+}
 
- /* serves all the static files */
- app.get(/^(.+)$/, function(req, res){ 
-    console.log('static file request : ' + req.params[0]);
-    res.sendFile( __dirname + req.params[0]); 
-});
- 
-app.listen(port, function () {
-  console.log(`AlexBrausen.com is now being served on port ${port}`);
-});
+async function updatePlaylist() {
+    const updated_data = await getSpotifyPlaylist(upcoming.id);
+    const hash = crypto.createHash("sha256");
+    hash.update(JSON.stringify(updated_data));
+    const new_digest = hash.digest("hex");
+    if (new_digest !== upcoming.digest) {
+        upcoming.data = updated_data;
+        upcoming.digest = new_digest;
+    }
+}
+
+async function startServer() {
+    updatePlaylist();
+    setInterval(() => {
+        updatePlaylist();
+    }, 1000 * 60 * 60);
+
+    let app = express();
+
+    app.get('/', function (req, res) {
+    res.sendFile('index.html', { root: resolve('./dist/')});
+    });
+
+    app.get("/api/pages/default", function(_request, response) {
+        response.json(default_pages);
+    });
+
+    app.get("/api/youtube", function(_request, response) {
+        response.json(links);
+    });
+
+    app.get('/api/spotify/upcoming', async function (_request, response) {
+        response.json(upcoming.data);
+    });
+
+    /* serves all the static files */
+    app.get(/^(.+)$/, function(req, res){ 
+        console.log('static file request : ' + req.params[0]);
+        res.sendFile( __dirname + req.params[0]); 
+    });
+    
+    app.listen(port, function () {
+        console.log(`AlexBrausen.com is now being served on port ${port}`);
+    });
+}
+
+startServer();

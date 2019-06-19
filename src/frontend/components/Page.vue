@@ -1,182 +1,197 @@
-  <template>
-    <div>
-        <div class="page" v-bind:class=classObject v-bind:style=styleObject>
-            <span class="pageTitle">{{ title }}</span>
-            <span class="closePage pageContent" v-bind:style="pageContentStyle" v-on:click=closePage><span>&times;</span></span>
-            <div class="pageContent transitions" v-bind:style="pageContentStyle">
-                <slot>
-                    <p>Empty page</p>
-                </slot>
-            </div>
-        </div>
-        <div class="pageShadow transitions" v-if="!isActive" v-bind:class=classObject v-bind:style=styleObject v-on:click=openPage></div>
+<template>
+  <div v-if="is_choosable" class="page-component">
+    <div v-on:transitionend="updateContent()" class="page" v-bind:class="page_classes" v-bind:style="page_style" v-on:click="openPage()">
+      <span class="title" v-bind:style="title_style">{{ title }}</span>
+      <span class="page-closer content" v-bind:style="content_style" v-on:click="closePage">
+        <span>&times;</span>
+      </span>
+      <div class="content transitions" v-bind:style="content_style">
+        <slot>
+          <p>Empty page</p>
+        </slot>
+      </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 
 enum Form {
-    Bubble,
-    Open
+  Bubble,
+  Open
 }
 
 export default Vue.extend({
-    props: ['data', 'title', 'activeID', 'id'],
-    data(){
+  props: ["title", "activeID", "id", "number_of_pages"],
+  data() {
+    return {
+      is_active: false,
+      is_choosable: true,
+      content_opacity: 0.0,
+      show: false,
+      display_height: window.innerHeight,
+      display_width: window.innerWidth
+    };
+  },
+  computed: {
+    bubble_size: function() {
+      return this.display_limiter / this.number_of_pages * Math.log1p(this.number_of_pages - 1);
+    },
+    page_classes: function(): Object {
+      return {
+        hidden: this.activeID !== null && !this.is_active,
+        open: this.form == Form.Open,
+        bubble: this.form == Form.Bubble,
+        transitions: true
+      };
+    },
+    page_style: function(): Object {
+      if (this.form === Form.Open) {
         return {
-            isActive: false,
-            pageContentOpacity: 0.0,
-            show: false,
-        }
+          top: "10px",
+          left: "10px",
+          width: `${this.display_width - 20}px`,
+          height: `${this.display_height - 20}px`
+        };
+      } else {
+        const angle = (this.id * (2 * Math.PI / this.number_of_pages)) - (0.5 * Math.PI);
+        return {
+          top:
+            "calc(50% + " +
+            ((((this.display_limiter * 0.48) - (this.bubble_size/2)) * Math.sin(angle)) - (this.bubble_size/2)).toFixed(2) +
+            "px)",
+          left:
+            "calc(50% + " +
+            ((((this.display_limiter * 0.48) - (this.bubble_size/2)) * Math.cos(angle)) - (this.bubble_size/2)).toFixed(2) +
+            "px)",
+          width: `${this.bubble_size}px`,
+          height: `${this.bubble_size}px`
+        };
+      }
     },
-    computed:{
-        classObject:function(){
-            return {
-                hidden:this.activeID !== null && !this.isActive,
-                open:this.form == Form.Open,
-                bubble:this.form == Form.Bubble,
-                transitions:true
-            }
-        },
-        styleObject(): Object {
-            if (this.form === Form.Open) {
-                return {
-                    top:'10px',
-                    left:'10px'
-                }
-            }
-            else {
-                return {
-                    top:'calc(50% + ' + ((200 * Math.sin(this.id*(Math.PI/2))) - 125).toFixed(2) + 'px)',
-                    left:'calc(50% + ' + ((200 * Math.cos(this.id*(Math.PI/2))) - 125).toFixed(2) + 'px)'
-                }
-            }
-        },
-        pageContentStyle(): Object {
-            return {
-                opacity: this.pageContentOpacity
-            }
-        },
-        form(): Form {
-            return this.isActive ? Form.Open : Form.Bubble;
-        }
+    title_style: function() {
+      if (this.form === Form.Bubble){
+        return {
+          "font-size": `${this.bubble_size / (Math.PI * 1.61803)}px`
+        };
+      } else {
+        return {
+          "font-size": `${this.bubble_size / (Math.PI * 1.61803 * 1.61803)}px`
+        };
+      }
+
     },
-    methods:{
-        openPage:function(){
-            this.$emit('set-active', this.id);
-            this.pageContentOpacity = 1.0;
-        },
-        closePage:function(){
-            this.$emit('set-active', null);
-            this.pageContentOpacity = 0.0;
-        }
+    content_style: function() {
+      return {
+        opacity: this.content_opacity
+      };
     },
-    watch: {
-        activeID: function(newVal, oldVal) {
-            this.isActive = this.id === this.activeID;
-        }
+    form: function(): Form {
+      return this.is_active ? Form.Open : Form.Bubble;
+    },
+    display_limiter: function(){
+      return this.display_height < this.display_width ? this.display_height : this.display_width;
     }
+  },
+  methods: {
+    openPage: function() {
+      if (this.form === Form.Bubble) {
+        this.$emit("set-active", this.id);
+      }
+    },
+    closePage: function() {
+      this.$emit("set-active", null);
+    },
+    updateContent: function() {
+        if (this.form === Form.Open){
+          this.content_opacity = 1.0;
+        } else if (this.form === Form.Bubble){
+          this.content_opacity = 0.0;
+        }
+    },
+    updateSizes: function() {
+      this.display_height =  window.innerHeight;
+      this.display_width = window.innerWidth;
+    }
+  },
+  watch: {
+    activeID: function(newVal, oldVal) {
+      this.is_active = this.id === this.activeID;
+    }
+  },
+  created: function() {
+    const self = this;
+
+    window.addEventListener("resize", function() {
+      self.updateSizes();
+    });
+  }
 });
 </script>
 
 <style lang="scss">
-@import '../style';
+@import "../style";
 
-* {
-    box-sizing: border-box;
-}
+.page-component {
+  display: absolute;
+  height: 100%;
+  width: 100%;
 
-tr {
-    @include glow(5px, $accentColor)
-}
-
-th {
-    text-align: left;
-    padding: 10px;
-}
-
-td {
-    padding: 5px;
-}
-
-.centered {
-    margin: auto;
-}
-
-.pageShadow {
-  position: absolute;
-  &:hover {
-    cursor: pointer;
-    @include glow(30px,white);
-  }
-}
-
-.page {
   * {
-    color:$backColor;
+    box-sizing: border-box;
   }
-  > div {
-    background-color: $foreColor;
-  }
-  position: absolute;
-  background-color: $foreColor;
-  color:$backColor;
-}
 
-.open {
-  width:calc(100% - 20px);
-  min-height: 95%;
-  height:auto;
-  border-radius:10px;
-  .pageTitle {
-    font-size: 30px;
+  .centered {
+    margin: auto;
   }
-}
 
-.bubble {
-  height:$bubbleSize;
-  width:$bubbleSize;
-  border-radius: 50%;
-  .pageTitle {
-    font-size: 40px;
-    @include center();
-  }
-  .pageContent {
-    display: none;
-  }
-}
-
-.closePage {
-  transition: all 1s;
-  height:$closeSize;
-  width:$closeSize;
-  position: absolute;
-  background-color: lightgray;
-  border-radius: 50%;
-  top: 10px;
-  right: 10px;
-  > span {
-    color: red;
-    font-size: 3rem;
-    font-weight: 100;
-    @include center();
-  }
-  &:hover {
-    @include glow(25px,$accentColor);
-    cursor: pointer;
-  }
-}
-
-#upcomingHeader {
-    display: table;
-    > * {
-        display: inline-block;
+  .page {
+    * {
+      color: $backColor;
     }
-}
+    > div {
+      background-color: $foreColor;
+    }
+    position: absolute;
+    background-color: $foreColor;
+    color: $backColor;
+  }
 
-#headerImage {
-    float: left;
+  .open {
+    overflow: auto;
     border-radius: 10px;
+  }
+
+  .bubble {
+    @include bubble();
+    .title {
+      @include center();
+    }
+    .content {
+      display: none;
+    }
+  }
+
+  .page-closer {
+    transition: all 1s;
+    height: $closeSize;
+    width: $closeSize;
+    position: absolute;
+    background-color: lightgray;
+    border-radius: 50%;
+    top: 15px;
+    right: 15px;
+    > span {
+      color: red;
+      font-size: 3rem;
+      font-weight: 100;
+      @include center();
+    }
+    &:hover {
+      @include glow(25px, $accentColor);
+      cursor: pointer;
+    }
+  }
 }
 </style>

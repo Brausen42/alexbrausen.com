@@ -1,10 +1,10 @@
 {
   "name": "alexbrausen.com",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Personal website for Alex Brausen",
   "scripts": {
     "build": "webpack --mode=development && npm run copy-static-files",
-    "copy-static-files": "cp ./index.html ./dist && cp ./resources/* ./dist && cp -r ./resume ./dist && cp -r ./gol ./dist",
+    "copy-static-files": "cp ./index.html ./dist && cp -r ./assets ./dist && cp -r ./resume ./dist && cp -r ./gol ./dist",
     "publish": "webpack --mode=production && npm run copy-static-files",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,6 +20,7 @@
   "homepage": "https://github.com/Brausen42/alexbrausen.com#readme",
   "devDependencies": {
     "css-loader": "^2.1.0",
+    "file-loader": "^4.0.0",
     "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
     "ts-loader": "^5.3.3",

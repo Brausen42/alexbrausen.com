@@ -1,6 +1,6 @@
 <template>
     <div>
-        <canvas id="snake" class="gameDisplay"></canvas>
+        <canvas id="snake-game" class="gameDisplay"></canvas>
         <div class="gameDisplay">
             <h1 v-if="!active">Snake</h1>
             <p v-if="!active">Use the arrow keys, or WASD to navigate!</p>
@@ -325,7 +325,7 @@ export default Vue.extend({
         },
         setupCanvas() : boolean{
             if(this.canvas == null){
-                this.canvas = document.getElementById('snake') != null ? document.getElementById('snake') as HTMLCanvasElement: null;
+                this.canvas = document.getElementById('snake-game') != null ? document.getElementById('snake-game') as HTMLCanvasElement: null;
             }
 
             if(this.canvas == null){
@@ -383,7 +383,7 @@ export default Vue.extend({
         height: 80%;
     }
 
-    #snake {
+    #snake-game {
         background-color: lightgrey;
         @include insetGlow(50px, gray);
     }
