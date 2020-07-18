@@ -1,0 +1,40 @@
+{
+  "name": "alexbrausen.com",
+  "version": "0.2.2",
+  "description": "Personal website for Alex Brausen",
+  "scripts": {
+    "build": "webpack --mode=development && npm run copy-static-files",
+    "copy-static-files": "cp ./index.html ./dist && cp -r ./assets ./dist && cp -r ./resume ./dist && cp -r ./gol ./dist",
+    "publish": "webpack --mode=production && npm run copy-static-files",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Brausen42/alexbrausen.com.git"
+  },
+  "author": "Alex Brausen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Brausen42/alexbrausen.com/issues"
+  },
+  "homepage": "https://github.com/Brausen42/alexbrausen.com#readme",
+  "devDependencies": {
+    "css-loader": "^2.1.0",
+    "file-loader": "^4.0.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.1.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.2",
+    "vue": "^2.5.22",
+    "vue-loader": "^15.5.1",
+    "vue-template-compiler": "^2.5.22",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "@types/request-promise-native": "^1.0.15",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7",
+    "ts-promise": "^2.1.0"
+  }
+}

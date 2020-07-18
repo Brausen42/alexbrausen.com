@@ -61,7 +61,7 @@ async function getSpotifyAccessToken(override?: boolean) : Promise<string> {
         let body = JSON.parse(res);
         apiToken = body.access_token;
     }).catch((error: any) => {
-        console.log(error);
+        console.log(error.message);
     });
     return apiToken || "";
 }
@@ -110,7 +110,7 @@ async function getSpotifyPlaylist(id: string) {
                     return;
                 }
             }
-            console.log(err);
+            console.log(err.message);
             playlist.error = err.message;
         }
     }
@@ -138,10 +138,6 @@ async function startServer() {
 
     let app = express();
 
-    app.get('/', function (req, res) {
-    res.sendFile('index.html', { root: resolve('./dist/')});
-    });
-
     app.get("/api/pages/default", function(_request, response) {
         response.json(default_pages);
     });
@@ -157,7 +153,11 @@ async function startServer() {
     /* serves all the static files */
     app.get(/^(.+)$/, function(req, res){ 
         console.log('static file request : ' + req.params[0]);
-        res.sendFile( __dirname + req.params[0]); 
+        if (!/\./.test(req.params[0])) {
+            res.sendFile('index.html', { root: resolve('./dist/build')});
+            return
+        }
+        res.sendFile( `${__dirname}/build/${req.params[0]}`); 
     });
     
     app.listen(port, function () {
