@@ -20,6 +20,10 @@ const Root = styled.div`
 	font-family: "Roboto", sans-serif;
 `;
 
+const Logo = styled.img`
+	width: 10%;
+`;
+
 const App = () => {
 
 	/** Gets fired when the route changes.
@@ -61,6 +65,7 @@ const App = () => {
 			<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poiret+One" />
 			<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
 			<StateContext.Provider value={state} id="app">
+				<Logo src="/favicon.ico" />
 				<Videos index={1} />
 				<DynamicPage index={2} name="Game of Life" route="gol">
 					<GameOfLife />

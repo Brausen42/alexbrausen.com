@@ -1,6 +1,6 @@
 {
-  "name": "alexbrausen-client",
-  "short_name": "alexbrausen-client",
+  "name": "AlexBrausen.com",
+  "short_name": "AB",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

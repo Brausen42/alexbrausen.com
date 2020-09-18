@@ -1,6 +1,6 @@
 {
   "name": "alexbrausen.com",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Personal website for Alex Brausen",
   "main": "script.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "install-frontend": "cd src/frontend && yarn install",
     "install": "yarn run install-frontend && yarn run install-backend",
     "publish-backend": "cd src/backend && yarn run publish && cd ../../ && mkdir dist -p && cp -r ./src/backend/dist/* ./dist",
-    "publish-frontend": "cd src/frontend && yarn build && cd ../../ && mkdir dist -p && cp -r ./src/frontend/dist/* ./dist",
+    "publish-frontend": "cd src/frontend && yarn build && cd ../../ && mkdir dist -p && cp -r ./src/frontend/build ./dist",
     "debug": "node -r dotenv/config ./dist/server.js",
     "start": "node ./dist/server.js",
     "publish": "yarn run publish-backend && yarn run publish-frontend",

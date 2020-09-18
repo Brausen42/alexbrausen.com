@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useContext, useMemo, useState } from 'preact/hooks';
+import { useContext, useMemo, useState, useEffect, useCallback } from 'preact/hooks';
 import { Link } from 'preact-router/match';
 import { StateContext } from '../utilities/storage';
 import styled from 'styled-components';
@@ -92,18 +92,20 @@ const DynamicPage = props => {
 			y: state.center.y + (Math.sin(angle) * distance)
 		};
 	}, [state.center, props.index, distance]);
+	const updateTitle = useCallback(() => window.document.title = props.name.replace(/^\w/, c => c.toUpperCase()), [props.name]);
+	const resetTitle = useCallback(() => window.document.title = 'AlexBrausen.com');
     
 	const Body = useMemo(() => {
 		const title = <Title diameter={diameter} active={active}>{props.name}</Title>;
 		return active ?
 			[
 				title,
-				<Exit href="/" draggable={false}>&times;</Exit>,
+				<Exit href="/" draggable={false} onClick={resetTitle}>&times;</Exit>,
 				<StateContext.Provider>
 					<Contents children={props.children} />
 				</StateContext.Provider>
 			] :
-			<FullLink href={route} draggable={false}>
+			<FullLink href={route} draggable={false} onClick={updateTitle}>
 				{ title }
 			</FullLink>;
 	}, [props, diameter, route]);
