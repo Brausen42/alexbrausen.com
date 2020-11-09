@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useContext, useMemo, useState, useEffect, useCallback } from 'preact/hooks';
+import { useContext, useMemo, useState, useCallback } from 'preact/hooks';
 import { Link } from 'preact-router/match';
 import { StateContext } from '../utilities/storage';
 import styled from 'styled-components';
@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 const Root = styled.div`
-    background: radial-gradient(white, transparent);
+    background: ${props => props.active ? 'linear-gradient(white, transparent, white)': 'radial-gradient(white, transparent)'};
     backdrop-filter: blur(10px);
     color: rgb(32, 39, 47);
     position: fixed;
@@ -84,7 +84,7 @@ const DynamicPage = props => {
 		const scalingFactor = 0.7;
 		return diameter * scalingFactor;
 	}, [state.bounds, state.numOfPages]);
-	const distance = useMemo(() => (diameter / 2) * 1.4, [diameter]);
+	const distance = useMemo(() => (diameter / 2) * 1.618, [diameter]);
 	const position = useMemo(() => {
 		const angle = ((2 * Math.PI / state.numOfPages) * props.index) - (Math.PI / 2);
 		return {

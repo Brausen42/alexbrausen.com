@@ -2,15 +2,15 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: alexbrausen-ingress
-  annotations:  
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-alexbrausen"
 spec:
   tls:
   - hosts:
     - alexbrausen.com
     - www.alexbrausen.com
-    secretName: letsencrypt-prod
+    secretName: alexbrausen-tls
   rules:
   - host: alexbrausen.com
     http:

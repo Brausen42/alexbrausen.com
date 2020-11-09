@@ -19,3 +19,13 @@ There's a lot that I would hope to do with this site. Here's a list of potential
 * Improve the Snake game by using a JS graphics library
 * Add the ability to interact with the Spotify playlist in intuitive or meaningful ways (sorting, voting on the songs that are in the playlist, etc.)
 * Overall, include more content on the site so it's less of a tech demo
+
+## K8s
+
+Followed a guide for configuring k8s cluster: https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes#step-2-%E2%80%94-setting-up-the-kubernetes-nginx-ingress-controller
+
+### External Configs Used
+* `kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.0.3/cert-manager.yaml`
+* `kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/do/deploy.yaml`
+
+

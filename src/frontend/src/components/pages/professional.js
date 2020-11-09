@@ -1,4 +1,4 @@
-import { Box, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Tab, Tabs } from '@material-ui/core';
+import { Box, Accordion, AccordionSummary, AccordionDetails, Tab, Tabs } from '@material-ui/core';
 import { Link } from 'preact-router/match';
 import { ExpandMore } from '@material-ui/icons';
 import { styled } from '@material-ui/core/styles';
@@ -41,14 +41,14 @@ const FullExpansion = props => {
 	return (
 		<Fragment>
 			{ Object.entries(props.panels).map(([title, details]) => (
-				<ExpansionPanel expanded={expand.includes(title)} onChange={onChange(title)} >
-					<ExpansionPanelSummary expandIcon={<ExpandMore />}>
+				<Accordion expanded={expand.includes(title)} onChange={onChange(title)} >
+					<AccordionSummary expandIcon={<ExpandMore />}>
 						{ title }
-					</ExpansionPanelSummary>
-					<ExpansionPanelDetails>
+					</AccordionSummary>
+					<AccordionDetails>
 						{ details }
-					</ExpansionPanelDetails>
-				</ExpansionPanel>
+					</AccordionDetails>
+				</Accordion>
 			))}
 		</Fragment>
 	);

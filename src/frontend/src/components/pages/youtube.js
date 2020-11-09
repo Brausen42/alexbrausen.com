@@ -26,7 +26,7 @@ const Styled = {
 	})
 };
 
-const Videos = props => {
+const Youtube = props => {
 	const youtube = useMemo(() => [
 		{
 			id: 0, title: 'Kurzgesagt',
@@ -54,7 +54,7 @@ const Videos = props => {
 		}
 	], []);
 	return (
-		<DynamicPage index={props.index} name="videos">
+		<DynamicPage index={props.index} name="youtube">
 			<Styled.Root>
 				{ youtube.map(({ title, description, link, background }) => (
 					<Styled.Card>
@@ -69,9 +69,8 @@ const Videos = props => {
 					</Styled.Card>
 				))}
 			</Styled.Root>
-
 		</DynamicPage>
 	);
 };
 
-export default Videos;
+export default Youtube;

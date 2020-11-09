@@ -4,6 +4,11 @@ import * as request from "request-promise-native";
 import { Options } from "request";
 import * as crypto from "crypto";
 
+const IS_DEV = process.env.NODE_ENV === 'development'
+if (IS_DEV) {
+    console.log('Running in development mode.')
+}
+
 const base64Client = process.env['SPOTIFY_CLIENT'] ? Buffer.from(process.env['SPOTIFY_CLIENT'] as string).toString("base64") : "";
 const port = process.env['LISTEN_PORT'] || 8080;
 let apiToken: string;
@@ -111,7 +116,6 @@ async function getSpotifyPlaylist(id: string) {
                 }
             }
             console.log(err.message);
-            playlist.error = err.message;
         }
     }
 
@@ -134,9 +138,9 @@ async function startServer() {
     updatePlaylist();
     setInterval(() => {
         updatePlaylist();
-    }, 1000 * 60 * 60);
+    }, 1000 * 60 * 60 * 24);
 
-    let app = express();
+    const app = express();
 
     app.get("/api/pages/default", function(_request, response) {
         response.json(default_pages);
@@ -151,8 +155,16 @@ async function startServer() {
     });
 
     /* serves all the static files */
-    app.get(/^(.+)$/, function(req, res){ 
+    app.get(/^(.+)$/, async function(req, res){ 
         console.log('static file request : ' + req.params[0]);
+        if (IS_DEV) {
+            if (!/\./.test(req.params[0])) {
+                res.send(await request.get(`http://localhost:8085/`))
+                return
+            }
+            res.redirect(`http://localhost:8085${req.params[0]}`)
+            return
+        }
         if (!/\./.test(req.params[0])) {
             res.sendFile('index.html', { root: resolve('./dist/build')});
             return

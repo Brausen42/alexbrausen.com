@@ -1,8 +1,7 @@
 {
   "name": "alexbrausen.com",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Personal website for Alex Brausen",
-  "main": "script.js",
   "scripts": {
     "build": "yarn run build-backend && yarn run build-frontend",
     "build-backend": "cd src/backend && yarn run build && cd ../../ && mkdir dist -p && cp -r ./src/backend/dist/* ./dist",
@@ -15,7 +14,9 @@
     "install": "yarn run install-frontend && yarn run install-backend",
     "publish-backend": "cd src/backend && yarn run publish && cd ../../ && mkdir dist -p && cp -r ./src/backend/dist/* ./dist",
     "publish-frontend": "cd src/frontend && yarn build && cd ../../ && mkdir dist -p && cp -r ./src/frontend/build ./dist",
-    "debug": "node -r dotenv/config ./dist/server.js",
+    "dev-frontend": "cd src/frontend && yarn dev",
+    "dev-backend": "cd src/backend && yarn dev",
+    "dev": "yarn dev-frontend & yarn dev-backend",
     "start": "node ./dist/server.js",
     "publish": "yarn run publish-backend && yarn run publish-frontend",
     "set-docker-vars": "yarn config set PACKAGE_VERSION $(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && yarn config set DOCKER_TAG brausen42/alexbrausen.com:v$(yarn config get PACKAGE_VERSION)",

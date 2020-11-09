@@ -5,7 +5,8 @@ import { StateContext } from '../utilities/storage';
 import DynamicPage from './dynamic-page';
 import GameOfLife from './pages/game-of-life';
 import Professional from './pages/professional';
-import Videos from './pages/videos';
+import Youtube from './pages/youtube';
+import Spotify from './pages/spotify';
 
 /*
 // Code-splitting is automated for routes
@@ -32,7 +33,7 @@ const App = () => {
 	 */
 	const [state, setState] = useState({
 		center: { x: 0, y: 0 },
-		numOfPages: 3,
+		numOfPages: 4,
 		route: '/'
 	});
 	const handleRoute = useCallback(e => {
@@ -66,16 +67,18 @@ const App = () => {
 			<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
 			<StateContext.Provider value={state} id="app">
 				<Logo src="/favicon.ico" />
-				<Videos index={1} />
+				<Youtube index={1} />
 				<DynamicPage index={2} name="Game of Life" route="gol">
 					<GameOfLife />
 				</DynamicPage>
 				<Professional index={3} />
+				<Spotify index={4} />
 				<Router onChange={handleRoute}>
 					<span path="/" />
 					<span path="/professional" />
-					<span path="/videos" />
+					<span path="/youtube" />
 					<span path="/gol" />
+					<span path="/spotify" />
 				</Router>
 			</StateContext.Provider>
 		</Root>

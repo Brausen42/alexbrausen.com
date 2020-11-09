@@ -1,8 +1,10 @@
-import { useEffect, useLayoutEffect, useState, useMemo, useRef, useCallback } from 'preact/hooks';
-import { styled, Box, Paper, Slider } from '@material-ui/core';
-import * as THREE from 'three';
-import ResizeObserver from 'resize-observer-polyfill';
+import { Box, Button, Paper, Slider, styled, TextField, IconButton } from '@material-ui/core';
+import { Menu, Close } from '@material-ui/icons';
+import { Fragment } from 'preact';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useSwipeable } from 'react-swipeable';
+import ResizeObserver from 'resize-observer-polyfill';
+import * as THREE from 'three';
 
 /*
 import { GPU } from "gpu.js";
@@ -111,81 +113,52 @@ const Styled = {
 		Stats: styled(Paper)({
 			display: 'inline-block',
 			margin: '5px',
-			padding: '5px',
-			height: 'max-content'
+			padding: props => props.open ? '5px': '0px',
+			height: 'max-content',
+			opacity: '0.8',
+			borderRadius: props => props.open ? '5px': '50%'
 		})
 	}
 };
 
-const SCENE_ROOT_ID = 'scene-root';
-
 const GameOfLife = () => {
-	const [num, setNum] = useState(500);
+	const [num, setNum] = useState(100);
+	const [density, setDensity] = useState(0.5);
 	const [fps, setFps] = useState(30);
-	const [actualFPS, setActualFPS] = useState(0);
-	const [pps, setActualPPS] = useState(0);
 	const [view, setView] = useState({ width: 0, height: 0 });
 	const [zoom, setZoom] = useState(0);
-	const [isZooming, setIsZooming] = useState(false);
+	const [configureOpen, setConfigureOpen] = useState(false);
+	const canvasRef = useRef();
+	const rootRef = useRef();
 	
 	const camera = useMemo(() =>  new THREE.PerspectiveCamera(75, 1, 0.1, 1000), []);
-	const renderer = useMemo(() => new THREE.WebGLRenderer(), []);
 
 	useEffect(() => {
 		camera.position.z = Math.abs(num - zoom);
 	}, [num, zoom]);
 
-	const onSwiping = useMemo(() => {
+	useEffect(() => {
+		setZoom(0);
+	}, [num]);
+
+	const swipeHandlers = useSwipeable({ trackMouse: true, preventDefaultTouchmoveEvent: true, onSwiping: (() => {
 		let previous = { x: 0, y: 0 };
-		return ({ first, deltaX, deltaY }) => {
+		return function({ first, deltaX, deltaY }) {
 			if (first) {
 				previous = { x: 0, y: 0 };
 			}
-			if (isZooming) {
-				return;
-			}
-			const scaleFactor = camera.position.z / num;
+			const scaleFactor = camera.position.z / (num * 2);
 			camera.position.x -= (previous.x - deltaX) * scaleFactor;
 			camera.position.y += (previous.y - deltaY) * scaleFactor;
 			previous = { x: deltaX, y: deltaY };
 		};
-	}, [isZooming, num]);
+	})() });
 
-	const handlers = useSwipeable({
-		trackMouse: true,
-		onSwiping
-	});
+	console.log('rerendering...');
 
-	/*
-	useEffect((() => {
-		const previousZoom = useRef(zoom);
-		const previous = useRef({ x: 0, y: 0 });
-		const zoomCountRef = useRef(0);
-		return () => {
-			if (previousZoom.current !== zoom) {
-				zoomCountRef.current = 0;
-			}
-			else if (zoomCountRef.current < 3) {
-				zoomCountRef.current++;
-			}
-
-			if (dragging && (zoomCountRef.current === 3)) {
-				const change = {
-					x: mousePosition.end.x - previous.current.x,
-					y: mousePosition.end.y - previous.current.y
-				};
-				camera.position.x -= (change.x) / Math.log(camera.position.z);
-				camera.position.y += (change.y) / Math.log(camera.position.z);
-			}
-			previousZoom.current = zoom;
-			previous.current = { ...mousePosition.end };
-		};
-	})(), [mousePosition, zoom]);
-	*/
-    
-	useLayoutEffect(() => {
-		document.getElementById(SCENE_ROOT_ID).appendChild(renderer.domElement);
-
+	// Core Game of life logic
+	useEffect(() => {
+		const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current });
 		const observer = new ResizeObserver(entries => {
 			let { height, width } = entries[0].contentRect;
 			height *= .99;
@@ -196,25 +169,8 @@ const GameOfLife = () => {
 			camera.updateProjectionMatrix();
 		});
 
-		observer.observe(renderer.domElement.parentElement);
-
-		renderer.domElement.addEventListener('dblclick', () => {
-			const changeAmount = camera.position.z / 10;
-			const changeDuration = 100;
-			const changeSteps = 100;
-			const changeStepTime = changeDuration / changeSteps;
-			const changeStepAmount = changeAmount / changeSteps;
-			const changeStep = (remainingSteps) => {
-				camera.position.z -= changeStepAmount;
-				if (remainingSteps > 0) {
-					setTimeout(changeStep, changeStepTime, remainingSteps - 1);
-				}
-			};
-			changeStep(changeSteps - 1);
-		});
-	}, [camera, renderer]);
-
-	useEffect(() => {
+		observer.observe(rootRef.current);
+		
 		const scene = new THREE.Scene();
 
 		const geometry = new THREE.BufferGeometry();
@@ -223,7 +179,7 @@ const GameOfLife = () => {
 		const total = num ** 2;
 		const offset = Math.floor(num / 2);
 
-		const createCellGrid = total => new Uint8Array(total).map(() => (Math.random() > 0.5 ? 1 : 0));
+		const createCellGrid = total => new Uint8Array(total).map(() => (Math.random() > density ? 1 : 0));
 
 		const up = 1;
 		const down = -1;
@@ -261,7 +217,6 @@ const GameOfLife = () => {
 		const size = 1;
 		const elevation = 1;
 
-		let actualFPScount = 0;
 		const updateVertices = () => {
 			lastVertexIndex = 0;
 			cells.forEach((visible, idx) => {
@@ -295,7 +250,6 @@ const GameOfLife = () => {
 				'position',
 				new THREE.BufferAttribute(vertices.slice(0, lastVertexIndex), 3)
 			);
-			actualFPScount++;
 		};
 
 		const updateCells = () => {
@@ -309,17 +263,8 @@ const GameOfLife = () => {
 			});
 		};
 
-		let actualPPS = 0;
-		const intervalId = setInterval(() => {
-			setActualFPS(actualFPScount);
-			actualFPScount = 0;
-			setActualPPS(actualPPS);
-			actualPPS = 0;
-		}, 1000);
-
 		const animate = () => {
 			renderer.render(scene, camera);
-			actualPPS++;
 		};
 
 		updateVertices();
@@ -344,29 +289,92 @@ const GameOfLife = () => {
 
 		return () => {
 			clearInterval(stepId);
-			clearInterval(intervalId);
 		};
+	}, [rootRef, canvasRef, num, density]);
+
+	const Configure = useMemo(() => {
+		const dimensionRef = useRef();
+		const densityRef = useRef();
+
+		function reconfigure() {
+			setNum(+dimensionRef.current.value);
+			setDensity(+densityRef.current.value);
+		}
+
+		function stopPropagation(e){ e.stopPropagation(); }
+
+		useEffect(() => {
+			if (dimensionRef.current) {
+				dimensionRef.current.value = num;
+			}
+			if (densityRef.current) {
+				densityRef.current.value = density;
+			}
+		});
+
+		return (
+			<Styled.HUD.Stats onMouseDown={stopPropagation} open={configureOpen}>
+				{ configureOpen ? <Fragment>
+					<IconButton onClick={() => setConfigureOpen(false)}><Close /></IconButton>
+					<TextField
+						type="number"
+						inputProps={{
+							min: 5,
+							max: 500,
+							step: 1
+						}}
+						helperText="Grid dimensions"
+						inputRef={dimensionRef}
+						fullWidth
+						variant="outlined"
+					/>
+					<TextField
+						type="number"
+						inputProps={{
+							min: 0,
+							max: 1,
+							step: 0.01
+						}}
+						helperText="Initial population density dimensions"
+						inputRef={densityRef}
+						fullWidth
+						variant="outlined"
+					/>
+					<Button onClick={reconfigure} fullWidth>Reconfigure</Button>
+				</Fragment> : <IconButton onClick={() => setConfigureOpen(true)}><Menu /></IconButton>
+				}
+			</Styled.HUD.Stats>
+		);
+	}, [num, density, configureOpen]);
+
+	const Zoomer = useMemo(() => {
+		function onChange(_e, value){ setZoom(value); }
+		function stopPropagation(e){ e.stopPropagation(); }
+		
+		return (
+			<Slider
+				orientation="vertical"
+				max={num}
+				min={0}
+				defaultValue={zoom}
+				track={false}
+				onChange={onChange}
+				onMouseDown={stopPropagation}
+			/>
+		);
 	}, [num]);
 
-	const Zoomer = useMemo(() => (
-		<Slider
-			orientation="vertical"
-			max={num}
-			min={0}
-			value={zoom}
-			onChange={(e, value) => setZoom(value)}
-			ontouchstart={() => setIsZooming(true)}
-			onMouseDown={() => setIsZooming(true)}
-		/>
-	), [num, zoom]);
-
 	return (
-		<Styled.GameOfLife id={SCENE_ROOT_ID}>
-			<Styled.HUD.Root width={view.width} height={view.height} {...handlers} onMouseUp={() => {setIsZooming(false);}} onTouchEnd={() => setIsZooming(false)}>
+		<Styled.GameOfLife ref={rootRef}>
+			<Styled.HUD.Root width={view.width} height={view.height}
+				{...swipeHandlers}
+			>
+				{ Configure }
 				<Styled.HUD.Controls>
 					{ Zoomer }
 				</Styled.HUD.Controls>
 			</Styled.HUD.Root>
+			<canvas ref={canvasRef} />
 		</Styled.GameOfLife>
 	);
 };
