@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: alexbrausen-server
-        image: brausen42/alexbrausen.com:v1.1.0
+        image: brausen42/alexbrausen.com:v1.1.2
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

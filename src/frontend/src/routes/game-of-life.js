@@ -115,6 +115,7 @@ const Styled = {
 			margin: '5px',
 			padding: props => props.open ? '5px': '0px',
 			height: 'max-content',
+			maxWidth: '400px',
 			opacity: '0.8',
 			borderRadius: props => props.open ? '5px': '50%'
 		})
@@ -313,7 +314,7 @@ const GameOfLife = () => {
 		});
 
 		return (
-			<Styled.HUD.Stats onMouseDown={stopPropagation} open={configureOpen}>
+			<Styled.HUD.Stats onMouseDown={stopPropagation} onTouchStart={stopPropagation} open={configureOpen}>
 				{ configureOpen ? <Fragment>
 					<IconButton onClick={() => setConfigureOpen(false)}><Close /></IconButton>
 					<TextField
@@ -323,7 +324,7 @@ const GameOfLife = () => {
 							max: 500,
 							step: 1
 						}}
-						helperText="Grid dimensions"
+						helperText="Grid dimensions (Anything above 300 may slow your computer)"
 						inputRef={dimensionRef}
 						fullWidth
 						variant="outlined"
@@ -335,7 +336,7 @@ const GameOfLife = () => {
 							max: 1,
 							step: 0.01
 						}}
-						helperText="Initial population density dimensions"
+						helperText="Initial population density (0 to 1)"
 						inputRef={densityRef}
 						fullWidth
 						variant="outlined"
@@ -360,6 +361,7 @@ const GameOfLife = () => {
 				track={false}
 				onChange={onChange}
 				onMouseDown={stopPropagation}
+				onTouchStart={stopPropagation}
 			/>
 		);
 	}, [num]);

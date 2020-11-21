@@ -1,7 +1,6 @@
-import { Box, Card, CardActionArea, CardContent, CardMedia } from '@material-ui/core';
+import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import { useMemo } from 'preact/hooks';
-import DynamicPage from '../dynamic-page';
 
 const Styled = {
 	Card: styled(Card)({
@@ -44,17 +43,18 @@ const Youtube = props => {
 			id: 2, title: 'Cold Fusion',
 			description: 'Technology focused overviews of cool breakthroughs, and the history of big tech companies',
 			link: 'https://www.youtube.com/channel/UC4QZ_LsYcvcq7qOsOhpAX4A',
-			background: 'https://yt3.ggpht.com/a-/AAuE7mBoaXsxIDEQkaAomqKD5g6C8MbA0fcupdXmKA=s288-mo-c-c0xffffffff-rj-k-no'
+			background: 'https://yt3.ggpht.com/a/AATXAJwncfZcFOJYBf5kxm_cs2wgA1WrEKMT79Hecls21w=s88-c-k-c0x00ffffff-no-rj'
 		},
 		{
-			id: 3, title: 'C.G.P. Grey',
+			id: 3, title: 'CGP Grey',
 			description: 'Logical approaches to a mosh-posh of interesting concepts',
 			link: 'https://www.youtube.com/channel/UC2C_jShtL725hvbm1arSV9w',
-			background: 'https://yt3.ggpht.com/a-/AAuE7mCZH_J-Vsd5-_-05hR8Ch4SfbgrbqkbaWvfpQ=s288-mo-c-c0xffffffff-rj-k-no'
+			background: 'https://yt3.ggpht.com/a/AATXAJwaTfk4dEmsJlGE92Dmv4r5l7elpFRKQbiTIYCl=s88-c-k-c0x00ffffff-no-rj'
 		}
 	], []);
 	return (
-		<DynamicPage index={props.index} name="youtube">
+		<Box textAlign="center">
+			<Typography>Here are a few Youtube channels I keep up with</Typography>
 			<Styled.Root>
 				{ youtube.map(({ title, description, link, background }) => (
 					<Styled.Card>
@@ -69,7 +69,7 @@ const Youtube = props => {
 					</Styled.Card>
 				))}
 			</Styled.Root>
-		</DynamicPage>
+		</Box>
 	);
 };
 

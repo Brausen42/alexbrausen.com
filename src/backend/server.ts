@@ -104,6 +104,8 @@ async function getSpotifyPlaylist(id: string) {
             const res = await request.get(playlistTrackOptions);
             playlist.name = res.name || playlist.name;
             playlist.description = res.description || playlist.description;
+            playlist.link = res?.external_urls?.spotify || playlist.link
+            playlist.followers = res?.followers?.total || playlist.followers
             playlist.imageUrl = res.images ? res.images[0].url || playlist.imageUrl : playlist.imageUrl || "";
     
             await parseTracks(res.tracks || res);
@@ -156,13 +158,13 @@ async function startServer() {
 
     /* serves all the static files */
     app.get(/^(.+)$/, async function(req, res){ 
-        console.log('static file request : ' + req.params[0]);
         if (IS_DEV) {
+            const redirectHost = `http://${req.headers.host?.split(':')[0]}:8085`
             if (!/\./.test(req.params[0])) {
-                res.send(await request.get(`http://localhost:8085/`))
+                res.send(await request.get(redirectHost))
                 return
             }
-            res.redirect(`http://localhost:8085${req.params[0]}`)
+            res.redirect(`${redirectHost}${req.params[0]}`)
             return
         }
         if (!/\./.test(req.params[0])) {

@@ -1,6 +1,6 @@
 {
   "name": "alexbrausen.com",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Personal website for Alex Brausen",
   "scripts": {
     "build": "yarn run build-backend && yarn run build-frontend",

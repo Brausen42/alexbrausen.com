@@ -1,15 +1,17 @@
-import { Box, Accordion, AccordionSummary, AccordionDetails, Tab, Tabs } from '@material-ui/core';
-import { Link } from 'preact-router/match';
-import { ExpandMore } from '@material-ui/icons';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
+import { ExpandMore } from '@material-ui/icons';
 import { Fragment } from 'preact';
-import { useCallback, useState, useMemo } from 'preact/hooks';
-import DynamicPage from '../dynamic-page';
+import { Link } from 'preact-router/match';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 
 const Styled = {
 	TabBody: styled(Box)({
 		padding: '10px',
 		background: 'rgba(255, 255, 255, 0.7)'
+	}),
+	TableCell: styled(TableCell)({
+		fontWeight: 'bold'
 	})
 };
 
@@ -126,20 +128,24 @@ const Education = () => {
 		</h5>
 		<small>December 2017 - GPA 3.75</small>
 		<h4>Courses Taken</h4>
-		<table class="table table-hover">
-			<tr>
-				<th>Department</th>
-				<th>Number</th>
-				<th>Title</th>
-			</tr>
-			{ courses.map(course => (
-				<tr>
-					<td>{ course.dept }</td>
-					<td>{ course.number }</td>
-					<td>{ course.title }</td>
-				</tr>
-			))}
-		</table>
+		<Table size="small" stickyHeader>
+			<TableHead>
+				<TableRow>
+					<Styled.TableCell>Title</Styled.TableCell>
+					<Styled.TableCell align="right">Department</Styled.TableCell>
+					<Styled.TableCell align="right">Number</Styled.TableCell>
+				</TableRow>
+			</TableHead>
+			<TableBody>
+				{courses?.map?.(course => (
+					<TableRow key={course.title}>
+						<TableCell>{course.title}</TableCell>
+						<TableCell align="right">{course.dept}</TableCell>
+						<TableCell align="right">{course.number}</TableCell>
+					</TableRow>
+				))}
+			</TableBody>
+		</Table>
 	</Styled.TabBody>);
 };
 
@@ -150,17 +156,19 @@ const Professional = props => {
 	
 			<h4>Stack</h4>
 			<h5>Frontend</h5>
-			<p>A Preact.js client is built using functional components and a few MaterialUI components. The `preact-cli` is used for building into production assets.</p>
-			<p>A simple Node.js server built with express is used to serve these static files, and also allows a path for the client to gain dynamic data through REST calls.</p>
+			<p>A Preact.js client is built using functional components and a few MaterialUI components (which I hope to transition to use `styled-components` soon). The `preact-cli` is used for building into production assets.</p>
+			<h5>Backend</h5>
+			<p>A simple Node.js server built with express is used to serve these static files, and also exposes an api for the client to fetch info via REST calls.</p>
 	
-			<h4>Depoloyment</h4>
-			<p>I'm currently deploying this site through Digital Ocean and it's Kubernetes support. The Kubernetes cluster deploys the Stack above into pods and uses a LoadBalancer, Ingress control and the cert-manager project to securely run the site in a way that is easy to do continuous integration and deployment (CI/CD) by updating the docker image and deployment spec.</p>
+			<h4>Deployment</h4>
+			<p>I'm currently deploying this site through Digital Ocean and it's Kubernetes support. The Kubernetes cluster deploys the above Stack into pods and uses a LoadBalancer, Ingress control and the cert-manager project to securely run the site in a way that is easy to do continuous integration and deployment (CI/CD) by updating the docker image and deployment spec.</p>
 	
 			<h4>Future</h4>
 			<p>There's a lot that I would hope to do with this site, but it's hard to find time do so. Here's a list of potential improvements in a roughly priority-based order:</p>
 			<ul>
 				<li>Add the ability to interact with the playlist in intuitive or meaningful ways (sorting, voting on the songs that are in the playlist, etc.)</li>
-				<li>Overall, include more content on the site so it's less of a tech demo</li>
+				<li>Add features to the Game of Life app such as Toggling cells, changing the rate of time, and using a seed for sharing starting configs</li>
+				<li>Review the youtube channels listed, giving links to specific videos that have content I find interesting.</li>
 			</ul>
 		</div>,
 		Snake: <div>
@@ -175,14 +183,12 @@ const Professional = props => {
 			nature to the originally solo gameplay. In addition, my version allows a slightly more interesting solo
 			gameplay where, as you grow, mines are placed in the world to add more obstacles.
 				<br />
-				<br />The source code for this can be found on
-				<a href="https://github.com/Brausen42/Snake">my github</a>
+				<br />The source code for this can be found on <a href="https://github.com/Brausen42/Snake">my github</a>
 			</p>
 		</div>,
 		'Game of Life': <div>
 			<p class="col-lg-8">
-		  My interest in Cellular Automata lead me to recreate the
-		  <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank" rel="noopener noreferrer">Game of Life</a> introduced by John Conway in 1970.
+		  My interest in Cellular Automata lead me to recreate the <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank" rel="noopener noreferrer">Game of Life</a> introduced by John Conway in 1970.
 		  The idea is that you can create a simple world that advances from one time step to the next by applying a few
 		  simple rules to the current state of the world, and out of it there precipitates complex interactions.
 		  <br />
@@ -226,14 +232,14 @@ const Professional = props => {
 
 	const employment = useMemo(() => ({
 		'Best Buy': <div>
-			<h3>JavaScript Engineer @ Best Buy - DAI (Digital Analytics implementation)</h3>
-			<small>July 2019 - Now</small>
+			<h3>Associate Digital Engineer II @ Best Buy - DAI (Digital Analytics implementation)</h3>
+			<small>July 2019 - Now (July 2019 - July 2020 was Contractor via Randstad)</small>
 			<p>
-				DAI is responsible for most of the 3rd party integrations on <a href="https://www.bestbuy.com">BestBuy.com</a>, as well as analytics related first party integrations.
-				I've worked the most on the client-side analytics framework that other teams building the UI components can use to meet the analytics requirements that reporting and
-				recommendations teams have set forth. Although pretty much all of the code that goes onto the website from DAI is non-visual, we have been building a tool that makes
-				it much easier to verify what data is being sent on any given Best Buy page. The main technologies we work with are ES6+ JavaScript, Babel, Webpack, Preact, MaterialUI,
-				and WebdriverIO for automated regression testing.
+				DAI is responsible for most of the 3rd party integrations, as well as analytics related to user interactions with the core <a href="https://www.bestbuy.com">BestBuy.com</a> experience.
+				I've worked the most on the client-side analytics framework that connects data gathered by UI components with reporting and recommendations systems on the backend.
+				Although pretty much all of the code that goes onto the website from DAI is non-visual, we have built an internal tool as a chrome
+				extension to visualize the data being processed by our team on any given Best Buy page.
+				The main technologies we work with are ES6+ JavaScript, npm/yarn, Babel, Webpack, Preact, MaterialUI, and WebdriverIO.
 			</p>
 		</div>,
 		'Epic Systems': <div>
@@ -318,11 +324,7 @@ const Professional = props => {
 		Projects: <FullExpansion panels={projects} />,
 		Interests: <FullExpansion panels={interests} />
 	}), [projects, employment, interests]);
-	return (
-		<DynamicPage index={props.index} name="professional">
-			<FullTabs tabs={tabs} />
-		</DynamicPage>
-	);
+	return <FullTabs tabs={tabs} />;
 };
 
 export default Professional;

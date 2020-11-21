@@ -28,6 +28,9 @@ const Root = styled.div`
     opacity: ${props => props.visible ? 1.0 : 0};
     box-shadow: 0px 0px 10px 5px rgb(32, 39, 47, 0.5);
     transform: ${props => props.active ? 'unset' : `translate(-50%, -50%)`};
+    &:hover {
+        box-shadow: 0px 0px 20px 5px rgb(32, 39, 47, 0.5);
+    }
 `;
 
 const Title = styled.h1`
