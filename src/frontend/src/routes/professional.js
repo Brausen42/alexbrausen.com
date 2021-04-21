@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, Typography } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import { ExpandMore } from '@material-ui/icons';
 import { Fragment } from 'preact';
@@ -14,6 +14,55 @@ const Styled = {
 		fontWeight: 'bold'
 	})
 };
+
+const Overview = () => (
+	<Styled.TabBody>
+		<Typography variant="h3">Story so far</Typography>
+		<br />
+		<Typography variant="body1">
+			While attending the University of Minnesota - Twin Cities, I worked part time as a Teaching Assistant in entry to intermediate
+			level Computer Science courses. I had to really nail down programming basics, both Object-oriented and functional, since I would
+			otherwise not be a very helpful Teaching Assistant.
+		</Typography>
+		<br />
+		<Typography variant="body1">
+			During the summer between my Sophomore and Junior year of university, I was
+			lucky enough to land an internship with Thomson Reuters. There I got my first taste of what working as a software engineer in the
+			industry was like. I worked on multiple projects that exposed me to scripting, web applications, database queries, and a little bit
+			of backend.
+		</Typography>
+		<br />
+		<Typography variant="body1">
+			The following summer, I took an opportunity to live outside my hometown for a bit and intern at Epic Systems in the Madison
+			WI area. There I worked on a single project which was to build a web application for Genetic Analysts. The environment and tooling
+			requirements were hard to nail down, and with my mentor team wanting to leave things as open ended as possible for me, I ended up
+			writing a Pure JS web application built with IE support in mind. In hindsight, a framework such as React would've made things a lot
+			easier, but I also appreciate the depth of knowledge I gained of JavaScript and DOM manipulation basics that I use from time to time
+			still.
+		</Typography>
+		<br />
+		<Typography variant="body1">
+			After graduating from the U of M, I ended up taking my first full time position at Epic Systems based on my great experience as an intern.
+			I was placed on the Cognitive Computing Platform team. My team dealt with
+			connecting healthcare workflows within the EMR (Electronic Medical Record) system to predictive models so that time-sensitive patient outcomes,
+			such as the risk of Sepsis, could be given attention as fast as possible. During the year I spent at Epic Systems, I worked on two different sub-teams.
+			The first sub-team was responsible for the User-facing workflow that healthcare analysts would use to configure charts that frontline workers
+			used daily to include the outputs of the predictive models on a per-patient basis. The work I did was mostly on the backend, and revolved around
+			managing data I/O from the old NoSQL-style database that was used throughout Epic's EMR system. The second sub-team I worked on was much more interesting
+			to me. On that team, we were working directly on the pipeline that would collect patient data, run the appropriate predictive model, and feed the data
+			back into the EMR system, all from an external Kubernetes cluster hosted in Microsoft's Azure. Working with microservices with NodeJS and Go was
+			an entirely new world to me, but it only took a month or so before I started to cognize all the advantages of the architecture style. Unfortunately,
+			having the entirety of my family and social circle being a 4 hour drive away ended up pushing me away from Epic and the interesting work I was doing.
+		</Typography>
+		<br />
+		<Typography variant="body1">
+			In my transition back to the Twin Cities area, I found myself working at the corporate office of one of my favorite retailers, Best Buy, where I still
+			am to this day. The team I work on, DAI (Digital Analytics Implementation), deals with technology that is right on par with my experience coming into the job.
+			It's largely systems and api building, but it all lives on the client of bestbuy.com. My experience of using JavaScript and NodeJS in a browser environment
+			has paired nicely with the data-oriented backend systems I worked with at Epic.
+		</Typography>
+	</Styled.TabBody>
+);
 
 const FullTabs = props => {
 	const [tabValue, setTabValue] = useState(0);
@@ -319,6 +368,7 @@ const Professional = props => {
 	}), []);
 
 	const tabs = useMemo(() => ({
+		Overview: <Overview />,
 		Employment: <FullExpansion panels={employment} />,
 		Education: <Education />,
 		Projects: <FullExpansion panels={projects} />,

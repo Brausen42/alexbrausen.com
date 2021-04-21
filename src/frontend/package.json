@@ -7,9 +7,9 @@
     "start": "per-env",
     "start:production": "npm run -s serve",
     "start:development": "npm run -s dev",
-    "build": "preact build",
+    "build": "preact build --no-prerender",
     "serve": "preact build && serve build --single",
-    "dev": "preact watch --port=8085",
+    "dev": "preact watch --port=8085 --no-prerender",
     "lint": "eslint src",
     "test": "jest"
   },

@@ -78,8 +78,8 @@ const FullLink = styled(Link)`
 const DynamicPage = props => {
 	const [id] = useState(uuidv4());
 	const state = useContext(StateContext);
-	const route = useMemo(() => `${state.route}${props.route || props.name}/`, [props.name]);
-	const active = useMemo(() => state.activeRoute === route, [state.activeRoute, route]);
+	const route = useMemo(() => `${state.route}${props.route || props.name}`, [props.name]);
+	const active = useMemo(() => state.activeRoute?.startsWith?.(route), [state.activeRoute, route]);
 	const visible = useMemo(() => active || (state.activeRoute === state.route), [active, state.activeRoute]);
 	const diameter = useMemo(() => {
 		const radius = (state.bounds / 2);

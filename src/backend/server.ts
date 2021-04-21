@@ -156,6 +156,40 @@ async function startServer() {
         response.json(upcoming.data);
     });
 
+    app.get('/api/gift-ideas', async function (_request, response) {
+        response.json([
+            {
+                title: 'Mug Warmer',
+                url: 'https://www.amazon.com/dp/B08HK468TG/ref=cm_sw_r_cp_apa_fabt1_odcSFbSQV5RYE?tag=alliwantforch-20'
+            },
+            {
+                title: '"Hey Dude" Shoes',
+                url: 'https://www.heydudeshoesusa.com/products/wally-sox-2?color=brown&variant=31219018924099',
+                comments: 'I like pretty much all the colors, and size 10 should work'
+            },
+            {
+                title: 'Bonsai Tree Starter Kit',
+                url: 'https://www.amazon.com/dp/B07DRQ3382/ref=cm_gf_aAN_d_p0_qd0_B4osp0DJdTVdzInMwdfh?tag=alliwantforch-20'
+            },
+            {
+                title: 'Telescope',
+                url: 'https://www.amazon.com/dp/B081RJ8DW1/ref=cm_gf_aAN_d_p0_qd5_nbostmEHlSbB4gXCPI5S?tag=alliwantforch-20'
+            },
+            {
+                title: 'Beanie',
+                url: 'https://www.amazon.com/OZERO-Winter-Beanie-Fleece-Stocking/dp/B07H32RQSK/ref=sr_1_16?dchild=1&keywords=hats&qid=1605983491&sr=8-16&th=1&psc=1&tag=alliwantforch-20'
+            },
+            {
+                title: 'Hats',
+                url: 'https://www.hats.com/mens/textured-wool-baseball'
+            },
+            {
+                title: 'Room Light',
+                url: 'https://www.amazon.com/dp/B084DCF429/ref=cm_gf_aAN_d_p0_qd9_uYCcInWfSw6oQyKM32dr?th=1&tag=alliwantforch-20'
+            }
+        ]);
+    });
+
     /* serves all the static files */
     app.get(/^(.+)$/, async function(req, res){ 
         if (IS_DEV) {

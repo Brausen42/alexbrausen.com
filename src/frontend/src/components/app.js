@@ -8,6 +8,7 @@ import GameOfLife from '../routes/game-of-life';
 import Professional from '../routes/professional';
 import Youtube from '../routes/youtube';
 import Spotify from '../routes/spotify';
+import GiftIdeas from '../routes/gift-ideas';
 import { Fragment } from 'preact';
 
 const theme = createMuiTheme({
@@ -83,6 +84,7 @@ const App = () => {
 			<ThemeProvider theme={theme}>
 				<StateContext.Provider value={state} id="app">
 					<Router onChange={handleRoute}>
+						<GiftIdeas path="/gift-ideas" />
 						<Fragment path="/:page*" >
 							<Logo src="/favicon.ico" />
 							<DynamicPage index={1} name="youtube">

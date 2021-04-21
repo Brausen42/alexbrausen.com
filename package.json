@@ -1,6 +1,6 @@
 {
   "name": "alexbrausen.com",
-  "version": "1.1.2",
+  "version": "1.2.3",
   "description": "Personal website for Alex Brausen",
   "scripts": {
     "build": "yarn run build-backend && yarn run build-frontend",
@@ -18,7 +18,7 @@
     "dev-backend": "cd src/backend && yarn dev",
     "dev": "yarn dev-frontend & yarn dev-backend",
     "start": "node ./dist/server.js",
-    "publish": "yarn run publish-backend && yarn run publish-frontend",
+    "publish": "rm -rf ./dist && yarn run publish-backend && yarn run publish-frontend",
     "set-docker-vars": "yarn config set PACKAGE_VERSION $(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && yarn config set DOCKER_TAG brausen42/alexbrausen.com:v$(yarn config get PACKAGE_VERSION)",
     "docker-publish": "yarn run set-docker-vars && docker build -t $(yarn config get DOCKER_TAG) . && docker push $(yarn config get DOCKER_TAG)",
     "test": "echo \"Error: no test specified\" && exit 1"
